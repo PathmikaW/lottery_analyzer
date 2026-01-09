@@ -133,7 +133,7 @@ class ScraperManager:
             writer.writeheader()
             writer.writerows(data)
 
-        print(f"  ✓ Saved {len(data)} draws → {filepath}")
+        print(f"  Saved {len(data)} draws to {filepath}")
 
     def generate_summary_report(self) -> None:
         """Generate a summary report of collected data"""
