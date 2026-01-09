@@ -1,9 +1,5 @@
 # Sri Lankan Lottery Statistical Analyzer V1.0.0
 
-## IT 5117 - Python for AI Assignment
-
-Weerarathna T.M.P ( )
-
 ---
 
 ## Project Overview
