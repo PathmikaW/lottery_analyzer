@@ -73,6 +73,69 @@ class DLBScraper(BaseLotteryScraper):
     def __init__(self):
         super().__init__(self.BASE_URL)
 
+    def scrape_prize_data(self, lottery_id: int, draw_id: str) -> Dict:
+        """
+        Attempt to scrape prize data for a specific DLB draw
+
+        Args:
+            lottery_id: DLB lottery ID (1-18)
+            draw_id: Draw ID number
+
+        Returns:
+            Dictionary with prize tier data (pattern, prize, winners, total)
+
+        Note: As of 2026-01, DLB prize data is not consistently available via the
+        more_result API endpoint. This method is included for future compatibility
+        but may return empty results for most draws.
+        """
+        try:
+            from bs4 import BeautifulSoup
+
+            data = {
+                'resultID': draw_id,
+                'lot_Id': str(lottery_id),
+                'lastsegment': 'en'
+            }
+
+            url = f"{self.BASE_URL}/result/more_result"
+            resp = self.session.post(url, data=data, headers=self.headers, timeout=10)
+
+            if resp.status_code != 200 or "not found" in resp.text.lower():
+                return {}
+
+            prize_soup = BeautifulSoup(resp.text, 'html.parser')
+            tables = prize_soup.find_all('table')
+
+            if not tables:
+                return {}
+
+            prize_data = {}
+            table = tables[0]
+            rows = table.find_all('tr')
+
+            # Skip header row
+            for i, row in enumerate(rows[1:], 1):
+                cells = row.find_all(['th', 'td'])
+                if len(cells) < 4:
+                    continue
+
+                pattern = self.clean_text(cells[0].get_text())
+                winners = self.clean_text(cells[1].get_text())
+                prize_amount = self.clean_text(cells[2].get_text())
+                total_payout = self.clean_text(cells[3].get_text())
+
+                # Store prize data with numeric keys
+                prize_data[f"{i}_pattern"] = pattern
+                prize_data[f"{i}_prize"] = prize_amount
+                prize_data[f"{i}_winners"] = winners
+                prize_data[f"{i}_total"] = total_payout
+
+            return prize_data
+
+        except Exception as e:
+            # Silently return empty dict - prize data not available for most DLB draws
+            return {}
+
     def _fetch_paginated(self, lottery_id: int, page: int, result_id: str) -> 'BeautifulSoup':
         """
         Fetch a specific page using DLB's AJAX pagination

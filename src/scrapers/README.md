@@ -74,6 +74,8 @@ python run_scrapers.py --all --output my_data/
 
 ## Output Format
 
+### Standard CSV Format
+
 Each CSV file contains the following columns:
 
 | Column | Description |
@@ -93,6 +95,29 @@ Example:
 source,game,game_name,draw_id,draw_date,letter,numbers,raw_text,url
 nlb,mahajana_sampatha,Mahajana Sampatha,6068,2026-01-08,M,03;03;09;06;07;03,"6068 Thursday January 08, 2026 M 3 3 9 6 7 3",https://www.nlb.lk/results/mahajana-sampatha
 ```
+
+### Prize-Enhanced CSV Format
+
+Files with `_with_prizes` suffix include additional prize structure columns:
+
+| Column Pattern | Description |
+|----------------|-------------|
+| `{tier}_pattern` | Match pattern (e.g., "4 Numbers Correct", "Letter and Any 3 Numbers Correct") |
+| `{tier}_prize` | Prize amount for this tier (e.g., "Rs. 2,000,000.00") |
+| `{tier}_winners` | Number of winners in this tier |
+| `{tier}_total` | Total payout for this tier |
+
+Where `{tier}` can be:
+- `super_prize`: Jackpot tier (letter + all numbers)
+- `1`, `2`, `3`, etc.: Prize tiers in descending order
+
+Example:
+```csv
+source,game,draw_id,draw_date,letter,numbers,super_prize_pattern,super_prize_prize,super_prize_winners,super_prize_total,1_pattern,1_prize,1_winners,1_total,...
+nlb,govisetha,4313,2026-01-11,G,22;33;43;78,Letter and 4 Numbers Correct,Rs. 66399552.80,0,Rs. 0.00,4 Numbers Correct,Rs. 2000000.00,1,Rs. 2000000.00,...
+```
+
+**Note**: Prize data is currently available for NLB lotteries only. DLB prize data collection is implemented but may return empty results as the data is not consistently available via their API.
 
 ## Implementation Details
 
@@ -161,12 +186,49 @@ As per assignment requirements, we aim to collect:
 - Normal for 18 lotteries (takes 5-10 minutes)
 - Rate limiting is intentional to avoid server overload
 
+## Prize Data Collection
+
+### NLB Prize Scraping
+
+NLB prize data is available on individual draw pages and can be scraped using:
+
+```python
+from src.scrapers.nlb_scraper import NLBScraper
+
+nlb = NLBScraper()
+
+# Scrape without prizes (faster)
+results = nlb.scrape_game('govisetha', fetch_prizes=False)
+
+# Scrape with prizes (slower, ~0.5s per draw)
+results_with_prizes = nlb.scrape_game('govisetha', fetch_prizes=True)
+```
+
+**Performance**: Prize scraping adds ~0.3s delay per draw to avoid server overload. For all 8 NLB lotteries (~1,311 draws), expect 10-15 minutes total.
+
+### DLB Prize Scraping
+
+DLB prize scraping is implemented but currently returns empty results for most draws:
+
+```python
+from src.scrapers.dlb_scraper import DLBScraper
+
+dlb = DLBScraper()
+prize_data = dlb.scrape_prize_data(lottery_id=13, draw_id='2871')
+# Returns: {} (empty dict) for most draws
+```
+
+**Status**: The DLB `more_result` API endpoint exists but returns "Result not found" for tested draws. This may indicate:
+- Prize data is only published after a delay
+- The API requires different parameters
+- Prize data storage has changed
+
 ## Future Enhancements
 
-- [ ] Historical data collection with date ranges
-- [ ] Prize structure scraping
+- [ ] Investigate DLB prize data availability and update scraping logic
 - [ ] Incremental updates (only scrape new draws)
 - [ ] Data validation and quality checks
+- [ ] Export to other formats (JSON, Parquet)
 - [ ] Automated scheduling (cron jobs)
 
 ## License
