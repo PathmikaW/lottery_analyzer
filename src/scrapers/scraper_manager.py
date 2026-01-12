@@ -66,7 +66,8 @@ class ScraperManager:
         print("-" * 70)
         for game in self.dlb_scraper.LOTTERIES:
             try:
-                results = self.dlb_scraper.scrape_game(game)
+                # Fetch all available pages (up to 150 pages to ensure complete history)
+                results = self.dlb_scraper.scrape_game(game, max_pages=150)
                 all_results[f"dlb_{game}"] = results
                 total_draws += len(results)
 
