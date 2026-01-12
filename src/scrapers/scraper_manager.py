@@ -1,6 +1,6 @@
 """
 Scraper Manager
-Orchestrates data collection from all 18 Sri Lankan lotteries (9 NLB + 9 DLB)
+Orchestrates data collection from all 17 Sri Lankan lotteries (8 NLB + 9 DLB)
 """
 
 import csv
@@ -26,7 +26,7 @@ class ScraperManager:
 
     def scrape_all_lotteries(self, save_individual: bool = True) -> Dict[str, List[Dict]]:
         """
-        Scrape all 18 lotteries (9 NLB + 9 DLB)
+        Scrape all 17 lotteries (8 NLB + 9 DLB)
 
         Args:
             save_individual: If True, save each lottery to a separate CSV
@@ -36,7 +36,7 @@ class ScraperManager:
         """
         print("=" * 70)
         print("Sri Lankan Lottery Data Collection")
-        print("Scraping 18 lotteries (9 NLB + 9 DLB)")
+        print("Scraping 17 lotteries (8 NLB + 9 DLB)")
         print("=" * 70)
 
         all_results = {}

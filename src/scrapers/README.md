@@ -4,8 +4,8 @@ Web scrapers for collecting historical lottery draw data from Sri Lanka's lotter
 
 ## Overview
 
-This module scrapes data from **18 Sri Lankan lotteries**:
-- **9 NLB (National Lotteries Board)** lotteries
+This module scrapes data from **17 Sri Lankan lotteries**:
+- **8 NLB (National Lotteries Board)** lotteries
 - **9 DLB (Development Lotteries Board)** lotteries
 
 ## Features
@@ -25,7 +25,7 @@ This module scrapes data from **18 Sri Lankan lotteries**:
 python run_scrapers.py --all
 ```
 
-This will scrape all 18 lotteries and save individual CSV files to `data/raw/`.
+This will scrape all 17 lotteries and save individual CSV files to `data/raw/`.
 
 ### Scrape Single Lottery
 
@@ -56,11 +56,10 @@ python run_scrapers.py --all --output my_data/
 2. `govisetha` - Govisetha (4 numbers)
 3. `dhana_nidhanaya` - Dhana Nidhanaya (5 numbers)
 4. `handahana` - Handahana (6 numbers)
-5. `mega_power` - Mega Power (6 numbers)
+5. `mega_power` - Mega Power (5 numbers)
 6. `ada_sampatha` - Ada Sampatha (6 numbers)
 7. `suba_dawasak` - Suba Dawasak (5 numbers)
-8. `nlb_jaya` - NLB Jaya (6 numbers)
-9. `lucky_7` - Lucky 7 (7 numbers)
+8. `nlb_jaya` - NLB Jaya (4 numbers)
 
 ### DLB Lotteries
 1. `ada_kotipathi` - Ada Kotipathi (6 numbers)

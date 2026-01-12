@@ -1,6 +1,6 @@
 """
 NLB (National Lotteries Board) Scraper
-Scrapes all 9 NLB lotteries from www.nlb.lk
+Scrapes all 8 NLB lotteries from www.nlb.lk
 """
 
 from typing import List, Dict
@@ -12,7 +12,7 @@ class NLBScraper(BaseLotteryScraper):
 
     BASE_URL = "https://www.nlb.lk"
 
-    # All 9 NLB lotteries with their configurations
+    # All 8 NLB lotteries with their configurations
     LOTTERIES = {
         "mahajana_sampatha": {
             "name": "Mahajana Sampatha",
@@ -37,7 +37,7 @@ class NLBScraper(BaseLotteryScraper):
         "mega_power": {
             "name": "Mega Power",
             "path": "/results/mega-power",
-            "numbers_count": 6,
+            "numbers_count": 5,
         },
         "ada_sampatha": {
             "name": "Ada Sampatha",
@@ -52,12 +52,7 @@ class NLBScraper(BaseLotteryScraper):
         "nlb_jaya": {
             "name": "NLB Jaya",
             "path": "/results/nlb-jaya",
-            "numbers_count": 6,
-        },
-        "lucky_7": {
-            "name": "Lucky 7",
-            "path": "/results/lucky-7",
-            "numbers_count": 7,
+            "numbers_count": 4,
         },
     }
 

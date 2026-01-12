@@ -1,4 +1,7 @@
 draw_date,draw_id,game,game_name,letter,numbers,raw_text,source,url
+2026-01-11,0646,ada_sampatha,Ada Sampatha,W,04;08;00;04;08;01,"0646 Sunday January 11, 2026 4 8 0 4 8 1 0 4 8 W",nlb,https://www.nlb.lk/results/ada-sampatha
+2026-01-10,0645,ada_sampatha,Ada Sampatha,M,07;04;08;07;04;09,"0645 Saturday January 10, 2026 7 4 8 7 4 9 8 7 4 M",nlb,https://www.nlb.lk/results/ada-sampatha
+2026-01-09,0644,ada_sampatha,Ada Sampatha,U,04;00;00;04;00;07,"0644 Friday January 09, 2026 4 0 0 4 0 7 0 4 0 U",nlb,https://www.nlb.lk/results/ada-sampatha
 2026-01-08,0643,ada_sampatha,Ada Sampatha,M,07;03;06;07;03;09,"0643 Thursday January 08, 2026 7 3 6 7 3 9 6 7 3 M",nlb,https://www.nlb.lk/results/ada-sampatha
 2026-01-07,0642,ada_sampatha,Ada Sampatha,S,01;06;07;01;06;09,"0642 Wednesday January 07, 2026 1 6 7 1 6 9 7 1 6 S",nlb,https://www.nlb.lk/results/ada-sampatha
 2026-01-06,0641,ada_sampatha,Ada Sampatha,Q,09;05;00;09;05;09,"0641 Tuesday January 06, 2026 9 5 0 9 5 9 0 9 5 Q",nlb,https://www.nlb.lk/results/ada-sampatha
@@ -203,6 +206,3 @@ draw_date,draw_id,game,game_name,letter,numbers,raw_text,source,url
 2025-06-13,0434,ada_sampatha,Ada Sampatha,Q,07;03;07;07;03;03,"0434 Friday June 13, 2025 7 3 7 7 3 3 7 7 3 Q",nlb,https://www.nlb.lk/results/ada-sampatha
 2025-06-12,0433,ada_sampatha,Ada Sampatha,X,07;06;02;07;06;07,"0433 Thursday June 12, 2025 7 6 2 7 6 7 2 7 6 X",nlb,https://www.nlb.lk/results/ada-sampatha
 2025-06-11,0432,ada_sampatha,Ada Sampatha,E,09;09;07;09;09;01,"0432 Wednesday June 11, 2025 9 9 7 9 9 1 7 9 9 E",nlb,https://www.nlb.lk/results/ada-sampatha
-2025-06-10,0431,ada_sampatha,Ada Sampatha,P,03;09;06;03;09;09,"0431 Tuesday June 10, 2025 3 9 6 3 9 9 6 3 9 P",nlb,https://www.nlb.lk/results/ada-sampatha
-2025-06-09,0430,ada_sampatha,Ada Sampatha,Y,01;05;05;01;05;04,"0430 Monday June 09, 2025 1 5 5 1 5 4 5 1 5 Y",nlb,https://www.nlb.lk/results/ada-sampatha
-2025-06-08,0429,ada_sampatha,Ada Sampatha,L,09;01;01;09;01;04,"0429 Sunday June 08, 2025 9 1 1 9 1 4 1 9 1 L",nlb,https://www.nlb.lk/results/ada-sampatha

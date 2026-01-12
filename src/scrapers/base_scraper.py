@@ -70,7 +70,23 @@ class BaseLotteryScraper:
     def extract_date(text: str) -> Optional[str]:
         """Extract and parse date"""
         try:
-            dt = dateparser.parse(text, dayfirst=True, fuzzy=True)
+            # Try to extract date pattern first (e.g., "2026-Jan-11" or "11-01-2026")
+            date_patterns = [
+                r'\d{4}-[A-Za-z]{3}-\d{1,2}',  # 2026-Jan-11
+                r'\d{1,2}-\d{1,2}-\d{4}',       # 11-01-2026
+                r'[A-Za-z]{3,9}\s+\d{1,2},?\s+\d{4}',  # January 11, 2026
+            ]
+
+            for pattern in date_patterns:
+                match = re.search(pattern, text)
+                if match:
+                    date_str = match.group()
+                    dt = dateparser.parse(date_str, fuzzy=True)
+                    if dt:
+                        return dt.date().isoformat()
+
+            # Fallback: try parsing the whole text
+            dt = dateparser.parse(text, fuzzy=True)
             return dt.date().isoformat() if dt else None
         except:
             return None
