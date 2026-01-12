@@ -42,19 +42,19 @@ class DLBScraper(BaseLotteryScraper):
             "name": "Ada Kotipathi",
             "path": "/result/11/",
             "lottery_id": 11,
-            "numbers_count": 6,
+            "numbers_count": 4,
         },
         "kapruka": {
             "name": "Kapruka",
             "path": "/result/12/",
             "lottery_id": 12,
-            "numbers_count": 6,
+            "numbers_count": 5,
         },
         "sasiri": {
             "name": "Sasiri",
             "path": "/result/13/",
             "lottery_id": 13,
-            "numbers_count": 4,
+            "numbers_count": 3,
         },
         "supiri_dhana_sampatha": {
             "name": "Supiri Dhana Sampatha",
@@ -66,7 +66,7 @@ class DLBScraper(BaseLotteryScraper):
             "name": "Jaya Sampatha",
             "path": "/result/18/",
             "lottery_id": 18,
-            "numbers_count": 6,
+            "numbers_count": 4,
         },
     }
 

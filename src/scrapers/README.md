@@ -62,15 +62,15 @@ python run_scrapers.py --all --output my_data/
 8. `nlb_jaya` - NLB Jaya (4 numbers)
 
 ### DLB Lotteries
-1. `ada_kotipathi` - Ada Kotipathi (6 numbers)
-2. `shanida` - Shanida (5 numbers)
+1. `ada_kotipathi` - Ada Kotipathi (4 numbers)
+2. `shanida` - Shanida (4 numbers)
 3. `lagna_wasana` - Lagna Wasana (4 numbers)
 4. `supiri_dhana_sampatha` - Supiri Dhana Sampatha (6 numbers)
-5. `super_ball` - Super Ball (5 numbers)
-6. `kapruka` - Kapruka (6 numbers)
-7. `jayoda` - Jayoda (5 numbers)
-8. `sasiri` - Sasiri (4 numbers)
-9. `jaya_sampatha` - Jaya Sampatha (6 numbers)
+5. `super_ball` - Super Ball (4 numbers)
+6. `kapruka` - Kapruka (5 numbers)
+7. `jayoda` - Jayoda (4 numbers)
+8. `sasiri` - Sasiri (3 numbers)
+9. `jaya_sampatha` - Jaya Sampatha (4 numbers)
 
 ## Output Format
 
