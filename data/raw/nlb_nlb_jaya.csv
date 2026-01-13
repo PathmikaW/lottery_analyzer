@@ -1,4 +1,5 @@
 draw_date,draw_id,game,game_name,letter,numbers,raw_text,source,url
+2026-01-12,0340,nlb_jaya,NLB Jaya,P,03;06;01;07,"0340 Monday January 12, 2026 P 3 6 1 7",nlb,https://www.nlb.lk/results/nlb-jaya
 2026-01-11,0339,nlb_jaya,NLB Jaya,W,04;04;00;01,"0339 Sunday January 11, 2026 W 4 4 0 1",nlb,https://www.nlb.lk/results/nlb-jaya
 2026-01-10,0338,nlb_jaya,NLB Jaya,I,07;09;05;04,"0338 Saturday January 10, 2026 I 7 9 5 4",nlb,https://www.nlb.lk/results/nlb-jaya
 2026-01-09,0337,nlb_jaya,NLB Jaya,G,02;05;09;00,"0337 Friday January 09, 2026 G 2 5 9 0",nlb,https://www.nlb.lk/results/nlb-jaya
@@ -204,4 +205,3 @@ draw_date,draw_id,game,game_name,letter,numbers,raw_text,source,url
 2025-06-14,0128,nlb_jaya,NLB Jaya,E,02;03;06;07,"0128 Saturday June 14, 2025 E 2 3 6 7",nlb,https://www.nlb.lk/results/nlb-jaya
 2025-06-13,0127,nlb_jaya,NLB Jaya,V,02;02;07;06,"0127 Friday June 13, 2025 V 2 2 7 6",nlb,https://www.nlb.lk/results/nlb-jaya
 2025-06-12,0126,nlb_jaya,NLB Jaya,F,02;06;09;04,"0126 Thursday June 12, 2025 F 2 6 9 4",nlb,https://www.nlb.lk/results/nlb-jaya
-2025-06-11,0125,nlb_jaya,NLB Jaya,V,01;08;08;05,"0125 Wednesday June 11, 2025 V 1 8 8 5",nlb,https://www.nlb.lk/results/nlb-jaya

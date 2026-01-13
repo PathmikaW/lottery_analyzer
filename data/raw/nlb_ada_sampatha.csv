@@ -1,4 +1,5 @@
 draw_date,draw_id,game,game_name,letter,numbers,raw_text,source,url
+2026-01-12,0647,ada_sampatha,Ada Sampatha,V,05;08;08;05;08;09,"0647 Monday January 12, 2026 5 8 8 5 8 9 8 5 8 V",nlb,https://www.nlb.lk/results/ada-sampatha
 2026-01-11,0646,ada_sampatha,Ada Sampatha,W,04;08;00;04;08;01,"0646 Sunday January 11, 2026 4 8 0 4 8 1 0 4 8 W",nlb,https://www.nlb.lk/results/ada-sampatha
 2026-01-10,0645,ada_sampatha,Ada Sampatha,M,07;04;08;07;04;09,"0645 Saturday January 10, 2026 7 4 8 7 4 9 8 7 4 M",nlb,https://www.nlb.lk/results/ada-sampatha
 2026-01-09,0644,ada_sampatha,Ada Sampatha,U,04;00;00;04;00;07,"0644 Friday January 09, 2026 4 0 0 4 0 7 0 4 0 U",nlb,https://www.nlb.lk/results/ada-sampatha
@@ -205,4 +206,3 @@ draw_date,draw_id,game,game_name,letter,numbers,raw_text,source,url
 2025-06-14,0435,ada_sampatha,Ada Sampatha,H,07;00;01;07;00;07,"0435 Saturday June 14, 2025 7 0 1 7 0 7 1 7 0 H",nlb,https://www.nlb.lk/results/ada-sampatha
 2025-06-13,0434,ada_sampatha,Ada Sampatha,Q,07;03;07;07;03;03,"0434 Friday June 13, 2025 7 3 7 7 3 3 7 7 3 Q",nlb,https://www.nlb.lk/results/ada-sampatha
 2025-06-12,0433,ada_sampatha,Ada Sampatha,X,07;06;02;07;06;07,"0433 Thursday June 12, 2025 7 6 2 7 6 7 2 7 6 X",nlb,https://www.nlb.lk/results/ada-sampatha
-2025-06-11,0432,ada_sampatha,Ada Sampatha,E,09;09;07;09;09;01,"0432 Wednesday June 11, 2025 9 9 7 9 9 1 7 9 9 E",nlb,https://www.nlb.lk/results/ada-sampatha
