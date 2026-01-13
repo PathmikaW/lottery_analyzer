@@ -288,108 +288,33 @@ class DLBScraper(BaseLotteryScraper):
         url, soup = self._fetch(config['path'])
         results = []
 
-        # DLB structure: H3 tags for draw info, H6 tags for numbers
-        # Each lottery result is grouped: 1 H3 followed by several H6 elements
+        # IMPORTANT: DLB page 1 shows ALL 9 lotteries' latest draws (mixed)
+        # We must skip page 1 and use pagination API which filters by lottery_id
+        # Pagination API starts from page 1 (pageId=0) and returns only the specific lottery
 
-        h3_tags = soup.find_all('h3')
+        # Extract resultID from page 1 for pagination
+        lottery_id = config['lottery_id']
+        result_input = soup.find('input', id=f'resultID{lottery_id}')
+        result_id = result_input.get('value') if result_input else None
 
-        for h3 in h3_tags:
-            # Extract draw info from H3
-            draw_info_text = self.clean_text(h3.get_text(" ", strip=True))
+        # Pagination: fetch pages using the pagination API (which properly filters)
+        if result_id:
+            import time
+            # Start from page 1 (pageId=0) via pagination API
+            for page_num in range(1, max_pages + 1):
+                # Rate limiting
+                time.sleep(0.5)
 
-            if not draw_info_text or len(draw_info_text) < 10:
-                continue
+                page_soup = self._fetch_paginated(lottery_id, page_num, result_id)
+                if page_soup:
+                    page_results = self._parse_paginated_table(page_soup, config, game, url)
+                    results.extend(page_results)
 
-            # Extract draw ID (3-5 digit number)
-            draw_nums = self.extract_numbers(draw_info_text)
-            draw_id = None
-            for num in draw_nums:
-                if 3 <= len(num) <= 5 and not (num.startswith('20') and len(num) == 4):
-                    draw_id = num
-                    break
-
-            if not draw_id:
-                continue
-
-            # Extract date
-            draw_date = self.extract_date(draw_info_text)
-
-            # Find H6 tags within the result structure
-            # DLB structure: H3 is in div.col-lg-4, numbers are in sibling div.col-lg-7
-            # Both are children of div.lot_main_result
-            letter = None
-            lottery_nums = []
-
-            # Go up to the grandparent (lot_main_result container)
-            parent = h3.parent
-            if parent:
-                grandparent = parent.parent
-                if grandparent:
-                    # Find the ul.result_detail_result in the grandparent
-                    result_ul = grandparent.find('ul', class_='result_detail_result')
-                    if result_ul:
-                        # Get all H6 tags from LI elements
-                        li_elements = result_ul.find_all('li')
-                        for li in li_elements:
-                            h6 = li.find('h6')
-                            if h6:
-                                value = self.clean_text(h6.get_text().strip())
-
-                                if not value:
-                                    continue
-
-                                # Single letter
-                                if len(value) == 1 and value.isalpha():
-                                    letter = value.upper()
-                                # Number
-                                elif value.isdigit():
-                                    lottery_nums.append(value)
-
-            # Validate we have enough numbers
-            expected_count = config['numbers_count']
-            if len(lottery_nums) < expected_count:
-                continue
-
-            # Take first k numbers and format
-            lottery_nums = lottery_nums[:expected_count]
-            numbers = ";".join(self.normalize_number(n) for n in lottery_nums)
-
-            # Store result
-            results.append({
-                "source": "dlb",
-                "game": game,
-                "game_name": config['name'],
-                "draw_id": draw_id,
-                "draw_date": draw_date,
-                "letter": letter,
-                "numbers": numbers,
-                "raw_text": draw_info_text[:350],
-                "url": url,
-            })
-
-        # Pagination: fetch additional pages if max_pages > 1
-        if max_pages > 1:
-            # Extract resultID from page 1 for pagination
-            lottery_id = config['lottery_id']
-            result_input = soup.find('input', id=f'resultID{lottery_id}')
-            result_id = result_input.get('value') if result_input else None
-
-            if result_id:
-                import time
-                for page_num in range(2, max_pages + 1):
-                    # Rate limiting
-                    time.sleep(0.5)
-
-                    page_soup = self._fetch_paginated(lottery_id, page_num, result_id)
-                    if page_soup:
-                        page_results = self._parse_paginated_table(page_soup, config, game, url)
-                        results.extend(page_results)
-
-                        # Stop if we got no results (end of data)
-                        if len(page_results) == 0:
-                            break
-            else:
-                print(f"  Warning: Could not find resultID for pagination")
+                    # Stop if we got no results (end of data)
+                    if len(page_results) == 0:
+                        break
+        else:
+            print(f"  Warning: Could not find resultID for pagination")
 
         # Remove duplicates
         unique_results = {}
