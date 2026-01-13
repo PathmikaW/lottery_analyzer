@@ -288,16 +288,17 @@ class DLBScraper(BaseLotteryScraper):
         url, soup = self._fetch(config['path'])
         results = []
 
-        # IMPORTANT: DLB page 1 shows ALL 9 lotteries' latest draws (mixed)
-        # We must skip page 1 and use pagination API which filters by lottery_id
-        # Pagination API starts from page 1 (pageId=0) and returns only the specific lottery
+        # IMPORTANT: DLB uses a shared "lot_main_result" section that shows the same featured
+        # lottery (usually Ada Kotipathi) on ALL lottery pages. We must skip this section and
+        # use ONLY the pagination API which properly filters by lottery_id.
 
         # Extract resultID from page 1 for pagination
         lottery_id = config['lottery_id']
         result_input = soup.find('input', id=f'resultID{lottery_id}')
         result_id = result_input.get('value') if result_input else None
 
-        # Pagination: fetch pages using the pagination API (which properly filters)
+        # Fetch draws using pagination API (which properly filters by lottery_id)
+        # Note: The pagination may not include the very latest draw immediately after it occurs
         if result_id:
             import time
             # Start from page 1 (pageId=0) via pagination API
