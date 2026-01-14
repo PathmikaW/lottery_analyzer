@@ -75,18 +75,15 @@ class DLBScraper(BaseLotteryScraper):
 
     def scrape_prize_data(self, lottery_id: int, draw_id: str) -> Dict:
         """
-        Attempt to scrape prize data for a specific DLB draw
+        Scrape prize data for a specific DLB draw from the MORE button popup
 
         Args:
             lottery_id: DLB lottery ID (1-18)
             draw_id: Draw ID number
 
         Returns:
-            Dictionary with prize tier data (pattern, prize, winners, total)
-
-        Note: As of 2026-01, DLB prize data is not consistently available via the
-        more_result API endpoint. This method is included for future compatibility
-        but may return empty results for most draws.
+            Dictionary with prize tier data (matches, winners, prize, amount)
+            Format: {tier}_matches, {tier}_winners, {tier}_prize, {tier}_amount
         """
         try:
             from bs4 import BeautifulSoup
@@ -100,12 +97,13 @@ class DLBScraper(BaseLotteryScraper):
             url = f"{self.BASE_URL}/result/more_result"
             resp = self.session.post(url, data=data, headers=self.headers, timeout=10)
 
-            if resp.status_code != 200 or "not found" in resp.text.lower():
+            if resp.status_code != 200:
                 return {}
 
             prize_soup = BeautifulSoup(resp.text, 'html.parser')
-            tables = prize_soup.find_all('table')
 
+            # Look for the prize table
+            tables = prize_soup.find_all('table')
             if not tables:
                 return {}
 
@@ -113,27 +111,34 @@ class DLBScraper(BaseLotteryScraper):
             table = tables[0]
             rows = table.find_all('tr')
 
-            # Skip header row
-            for i, row in enumerate(rows[1:], 1):
+            # Parse data rows (skip header)
+            tier_num = 1
+            for row in rows[1:]:  # Skip header row
                 cells = row.find_all(['th', 'td'])
                 if len(cells) < 4:
                     continue
 
-                pattern = self.clean_text(cells[0].get_text())
+                matches = self.clean_text(cells[0].get_text())
                 winners = self.clean_text(cells[1].get_text())
-                prize_amount = self.clean_text(cells[2].get_text())
-                total_payout = self.clean_text(cells[3].get_text())
+                prize = self.clean_text(cells[2].get_text())
+                amount = self.clean_text(cells[3].get_text())
 
-                # Store prize data with numeric keys
-                prize_data[f"{i}_pattern"] = pattern
-                prize_data[f"{i}_prize"] = prize_amount
-                prize_data[f"{i}_winners"] = winners
-                prize_data[f"{i}_total"] = total_payout
+                # Skip TOTAL row or empty rows
+                if not matches or 'TOTAL' in matches.upper():
+                    continue
+
+                # Store with tier number
+                prize_data[f"tier_{tier_num}_matches"] = matches
+                prize_data[f"tier_{tier_num}_winners"] = winners
+                prize_data[f"tier_{tier_num}_prize"] = prize
+                prize_data[f"tier_{tier_num}_amount"] = amount
+
+                tier_num += 1
 
             return prize_data
 
         except Exception as e:
-            # Silently return empty dict - prize data not available for most DLB draws
+            print(f"    Warning: Could not fetch prize data for draw {draw_id}: {e}")
             return {}
 
     def _fetch_paginated(self, lottery_id: int, page: int, result_id: str) -> 'BeautifulSoup':
