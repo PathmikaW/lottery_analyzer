@@ -1,0 +1,168 @@
+{
+  "generated_at": "2026-01-14T15:43:06.695893",
+  "total_lotteries": 17,
+  "total_draws": 8085,
+  "nlb_draws": 1310,
+  "dlb_draws": 6775,
+  "completeness_rate": 96.46670789527933,
+  "date_range": {
+    "min": "2021-04-01",
+    "max": "2026-01-12",
+    "span_days": 1747
+  },
+  "lotteries": [
+    {
+      "lottery": "dlb_ada_kotipathi",
+      "source": "DLB",
+      "draws": 772,
+      "numbers_per_draw": 4,
+      "min_date": "2023-11-16",
+      "max_date": "2026-01-11",
+      "date_span_days": 787
+    },
+    {
+      "lottery": "dlb_jaya_sampatha",
+      "source": "DLB",
+      "draws": 154,
+      "numbers_per_draw": 4,
+      "min_date": "2025-08-11",
+      "max_date": "2026-01-11",
+      "date_span_days": 153
+    },
+    {
+      "lottery": "dlb_jayoda",
+      "source": "DLB",
+      "draws": 74,
+      "numbers_per_draw": 4,
+      "min_date": "2025-02-03",
+      "max_date": "2025-10-27",
+      "date_span_days": 266
+    },
+    {
+      "lottery": "dlb_kapruka",
+      "source": "DLB",
+      "draws": 122,
+      "numbers_per_draw": 5,
+      "min_date": "2025-09-12",
+      "max_date": "2026-01-11",
+      "date_span_days": 121
+    },
+    {
+      "lottery": "dlb_lagna_wasana",
+      "source": "DLB",
+      "draws": 1627,
+      "numbers_per_draw": 4,
+      "min_date": "2021-04-01",
+      "max_date": "2026-01-11",
+      "date_span_days": 1746
+    },
+    {
+      "lottery": "dlb_sasiri",
+      "source": "DLB",
+      "draws": 773,
+      "numbers_per_draw": 3,
+      "min_date": "2021-11-10",
+      "max_date": "2026-01-11",
+      "date_span_days": 1523
+    },
+    {
+      "lottery": "dlb_shanida",
+      "source": "DLB",
+      "draws": 1627,
+      "numbers_per_draw": 4,
+      "min_date": "2021-04-01",
+      "max_date": "2026-01-11",
+      "date_span_days": 1746
+    },
+    {
+      "lottery": "dlb_super_ball",
+      "source": "DLB",
+      "draws": 946,
+      "numbers_per_draw": 4,
+      "min_date": "2023-05-26",
+      "max_date": "2026-01-11",
+      "date_span_days": 961
+    },
+    {
+      "lottery": "dlb_supiri_dhana_sampatha",
+      "source": "DLB",
+      "draws": 680,
+      "numbers_per_draw": 6,
+      "min_date": "2024-02-16",
+      "max_date": "2026-01-11",
+      "date_span_days": 695
+    },
+    {
+      "lottery": "nlb_ada_sampatha",
+      "source": "NLB",
+      "draws": 207,
+      "numbers_per_draw": 6,
+      "min_date": "2025-06-12",
+      "max_date": "2026-01-12",
+      "date_span_days": 214
+    },
+    {
+      "lottery": "nlb_dhana_nidhanaya",
+      "source": "NLB",
+      "draws": 81,
+      "numbers_per_draw": 5,
+      "min_date": "2025-06-12",
+      "max_date": "2025-08-31",
+      "date_span_days": 80
+    },
+    {
+      "lottery": "nlb_govisetha",
+      "source": "NLB",
+      "draws": 215,
+      "numbers_per_draw": 4,
+      "min_date": "2025-06-12",
+      "max_date": "2026-01-12",
+      "date_span_days": 214
+    },
+    {
+      "lottery": "nlb_handahana",
+      "source": "NLB",
+      "draws": 81,
+      "numbers_per_draw": 6,
+      "min_date": "2025-06-12",
+      "max_date": "2025-08-31",
+      "date_span_days": 80
+    },
+    {
+      "lottery": "nlb_mahajana_sampatha",
+      "source": "NLB",
+      "draws": 215,
+      "numbers_per_draw": 6,
+      "min_date": "2025-06-12",
+      "max_date": "2026-01-12",
+      "date_span_days": 214
+    },
+    {
+      "lottery": "nlb_mega_power",
+      "source": "NLB",
+      "draws": 215,
+      "numbers_per_draw": 5,
+      "min_date": "2025-06-12",
+      "max_date": "2026-01-12",
+      "date_span_days": 214
+    },
+    {
+      "lottery": "nlb_nlb_jaya",
+      "source": "NLB",
+      "draws": 206,
+      "numbers_per_draw": 4,
+      "min_date": "2025-06-12",
+      "max_date": "2026-01-12",
+      "date_span_days": 214
+    },
+    {
+      "lottery": "nlb_suba_dawasak",
+      "source": "NLB",
+      "draws": 90,
+      "numbers_per_draw": 5,
+      "min_date": "2025-07-09",
+      "max_date": "2026-01-12",
+      "date_span_days": 187
+    }
+  ]
+}
