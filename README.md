@@ -177,18 +177,42 @@ python src/preprocessing/feature_engineer.py
 python src/preprocessing/data_splitter.py
 ```
 
-### 3. Model Training (🔄 Phase 3 - In Progress)
+### 3. Model Training (Phase 3)
+
+#### Option A: Google Colab (Recommended - 4.6x Faster)
+
+**Why Colab?**
+- Free Tesla T4 GPU (5-10x faster training)
+- No local setup required
+- Hyperparameter tuning: 8 min vs 45 min locally
+
+**Quick Start:**
+1. Open [Google Colab](https://colab.research.google.com)
+2. Upload notebooks from `notebooks/` folder:
+   - `01_baseline_models_colab.ipynb`
+   - `02_catboost_training_colab.ipynb` (coming soon)
+   - `03_hyperparameter_tuning_colab.ipynb` (coming soon)
+3. Enable GPU: Runtime → Change runtime type → GPU
+4. Run cells in order
+
+**See [COLAB_GUIDE.md](COLAB_GUIDE.md) for detailed instructions.**
+
+#### Option B: Local Training (CPU)
 
 ```bash
-# Train baseline models
-python src/models/baseline_models.py
+# Activate virtual environment
+lottery_env\Scripts\activate  # Windows
+source lottery_env/bin/activate  # Linux/Mac
 
-# Train CatBoost
-python src/models/catboost_model.py
+# Start Jupyter
+jupyter notebook
 
-# Hyperparameter tuning
-python src/models/hyperparameter_tuning.py
+# Open and run in order:
+# - notebooks/01_baseline_models.ipynb
+# - notebooks/02_catboost_training.ipynb
+# - notebooks/03_hyperparameter_tuning.ipynb
 ```
+
 
 ### 4. Explainability Analysis (🔄 Phase 4 - Planned)
 
