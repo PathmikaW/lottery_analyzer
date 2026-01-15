@@ -261,6 +261,15 @@ async def predict(request: PredictionRequest):
     # Load test data
     df_test = pd.read_csv(test_data_path)
 
+    # Encode categorical 'trend' column to numeric if present
+    if 'trend' in df_test.columns:
+        trend_mapping = {
+            'heating_up': 1,
+            'cooling_down': -1,
+            'stable': 0
+        }
+        df_test['trend'] = df_test['trend'].map(trend_mapping).fillna(0)
+
     predictions = []
 
     for number in request.numbers:
@@ -272,7 +281,7 @@ async def predict(request: PredictionRequest):
             continue
 
         # Extract features in correct order
-        features = number_data[FEATURE_COLS]
+        features = number_data[FEATURE_COLS].copy()
 
         # Get prediction
         proba = model.predict_proba(features)[0]
@@ -340,6 +349,16 @@ async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
 
     # Load test data and get features for this number
     df_test = pd.read_csv(test_data_path)
+
+    # Encode categorical 'trend' column to numeric if present
+    if 'trend' in df_test.columns:
+        trend_mapping = {
+            'heating_up': 1,
+            'cooling_down': -1,
+            'stable': 0
+        }
+        df_test['trend'] = df_test['trend'].map(trend_mapping).fillna(0)
+
     number_data = df_test[df_test['number'] == number].tail(1)
 
     if len(number_data) == 0:
@@ -349,7 +368,7 @@ async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
         )
 
     # Extract features in correct order
-    features = number_data[FEATURE_COLS]
+    features = number_data[FEATURE_COLS].copy()
 
     # Get prediction
     proba = model.predict_proba(features)[0]
