@@ -8,14 +8,14 @@
 
 ## 2. Why CatBoost Was Selected
 
-### 2.1 Not Taught in Lectures ✅
+### 2.1 Novel Algorithm Not Taught in Lectures
 Based on the Applied ML lecture slides, the following algorithms were covered:
 - Random Forest
 - Support Vector Machines (SVM)
 - Bayesian Learning
 - Basic tree-based methods
 
-**CatBoost was NOT taught**, making it a valid choice for this assignment's requirement of using a "new algorithm not covered during lectures."
+CatBoost was not taught in the course curriculum, making it a valid choice for this assignment's requirement of using a new algorithm not covered during lectures.
 
 ### 2.2 Optimal for Dataset Characteristics
 
@@ -24,15 +24,15 @@ Our lottery dataset has specific characteristics that make CatBoost the ideal ch
 | Dataset Feature | Why CatBoost Excels |
 |-----------------|---------------------|
 | **Categorical Features** | Native handling of `lottery` (17 types), `trend` (3 categories), without one-hot encoding |
-| **Small Dataset** | 7 months of data (485K records) - CatBoost's ordered boosting prevents overfitting |
+| **Small Dataset** | 58 months of data (485K records) - CatBoost's ordered boosting prevents overfitting |
 | **Class Imbalance** | Built-in `auto_class_weights='Balanced'` parameter handles 1:13.92 imbalance ratio |
 | **Mixed Feature Types** | Handles both categorical (`trend`, `lottery`) and numerical (`frequency_last_30`, `temperature_score`) seamlessly |
 
 ### 2.3 Technical Advantages
 
-**Ordered Boosting**: CatBoost uses a permutation-driven approach that reduces "prediction shift," ensuring the model remains unbiased and generalizes better to unseen data.
+**Ordered Boosting**: CatBoost uses a permutation-driven approach that reduces prediction shift, ensuring the model remains unbiased and generalizes better to unseen data.
 
-**Ordered Target Encoding**: Handles categorical variables by encoding based on target values while avoiding target leakage - a critical issue when working with time-series lottery data.
+**Ordered Target Encoding**: Handles categorical variables by encoding based on target values while avoiding target leakage, which is a critical issue when working with time-series lottery data.
 
 **Oblivious Decision Trees**: Builds symmetric trees where the same splitting criteria are used for all nodes at each level, significantly speeding up execution and preventing overfitting.
 
@@ -43,7 +43,7 @@ Our lottery dataset has specific characteristics that make CatBoost the ideal ch
 ### 3.1 vs Decision Trees (Taught in Lectures)
 - **Decision Trees**: Simple, interpretable, but prone to overfitting
 - **CatBoost**: Ensemble of decision trees using gradient boosting, significantly more accurate
-- **Advantage**: CatBoost achieves ~10-15% better accuracy through boosting
+- **Advantage**: CatBoost achieves approximately 10-15% better accuracy through boosting
 
 ### 3.2 vs Logistic Regression (Taught in Lectures)
 - **Logistic Regression**: Linear model, assumes features are independent
@@ -76,7 +76,7 @@ Our lottery dataset has specific characteristics that make CatBoost the ideal ch
 | Small dataset performance | Better (ordered boosting) | Good |
 | Default accuracy | Higher | Requires more tuning |
 | Training speed | Moderate | Fast |
-| **For our use case** | ✅ Better | ❌ Less suitable |
+| **For our use case** | Better | Less suitable |
 
 ### 4.2 CatBoost vs LightGBM
 | Feature | CatBoost | LightGBM |
@@ -84,17 +84,17 @@ Our lottery dataset has specific characteristics that make CatBoost the ideal ch
 | Small dataset overfitting | Lower risk | Higher risk |
 | Categorical handling | Native | Limited |
 | Training speed | Moderate | Fastest |
-| Accuracy on 7-month data | Higher | Lower |
-| **For our use case** | ✅ Better | ❌ Less suitable |
+| Accuracy on 58-month data | Higher | Lower |
+| **For our use case** | Better | Less suitable |
 
-**Conclusion**: For a 7-month lottery dataset with categorical features and class imbalance, CatBoost provides the best balance of accuracy, ease of use, and overfitting prevention.
+**Conclusion**: For a 58-month lottery dataset with categorical features and class imbalance, CatBoost provides the best balance of accuracy, ease of use, and overfitting prevention.
 
 ---
 
 ## 5. Justification for Lottery Prediction Task
 
 ### 5.1 Problem Framing
-This assignment is **NOT attempting to "beat the lottery"** (which is mathematically impossible for truly random events). Instead, we are:
+This assignment is not attempting to "beat the lottery" (which is mathematically impossible for truly random events). Instead, we are:
 
 **Binary Classification Task**: "Given historical patterns, what is the probability that number X appears in the next draw?"
 
@@ -110,9 +110,9 @@ This is a valid supervised learning problem because:
 4. We can apply XAI techniques (SHAP) to interpret predictions
 
 ### 5.3 Expected Performance
-We expect **modest but better-than-random performance**:
-- **Baseline (random guess)**: F1-Score ≈ 0.067 (class distribution)
-- **Expected CatBoost**: F1-Score ≈ 0.15-0.30
+We expect modest but better-than-random performance:
+- **Baseline (random guess)**: F1-Score approximately 0.067 (class distribution)
+- **Expected CatBoost**: F1-Score approximately 0.15-0.30
 - **Interpretation**: Model learns statistical patterns (hot/cold numbers, frequency trends) but cannot predict true randomness
 
 ---
@@ -136,7 +136,7 @@ model = CatBoostClassifier(
 )
 ```
 
-### 6.2 Why These Parameters?
+### 6.2 Parameter Rationale
 - **`auto_class_weights='Balanced'`**: Automatically adjusts for our 1:13.92 imbalance ratio without manual SMOTE
 - **`cat_features=['lottery', 'trend']`**: Leverages CatBoost's native categorical handling
 - **`depth=6`**: Balanced complexity - not too shallow (underfitting) or deep (overfitting)
@@ -148,32 +148,32 @@ model = CatBoostClassifier(
 
 **CatBoost is the optimal algorithm for this assignment because:**
 
-1. ✅ **Meets assignment requirement**: Not taught in lectures
-2. ✅ **Best for our data characteristics**: Native categorical handling, small dataset optimization, built-in imbalance handling
-3. ✅ **State-of-the-art performance**: Ordered boosting and ordered target encoding innovations
-4. ✅ **Academically rigorous**: Enables proper evaluation and XAI interpretation
-5. ✅ **Practical advantages**: Minimal preprocessing, faster than XGBoost, more accurate than Random Forest
+1. Meets assignment requirement: Not taught in lectures
+2. Best for our data characteristics: Native categorical handling, small dataset optimization, built-in imbalance handling
+3. State-of-the-art performance: Ordered boosting and ordered target encoding innovations
+4. Academically rigorous: Enables proper evaluation and XAI interpretation
+5. Practical advantages: Minimal preprocessing, faster than XGBoost, more accurate than Random Forest
 
-**Research-backed decision**: Multiple Kaggle competitions and academic papers confirm CatBoost's superiority for tabular data with categorical features and small-to-medium datasets[^1][^2].
+**Research-backed decision**: Multiple Kaggle competitions and academic papers confirm CatBoost's superiority for tabular data with categorical features and small-to-medium datasets.
 
 ---
 
 ## 8. Ethical Considerations
 
 We acknowledge that:
-- **Lottery is inherently random** - no algorithm can reliably predict future draws
-- **This is an educational project** - demonstrates ML/XAI skills, not commercial gambling
-- **Predictions should not encourage gambling addiction** - will include disclaimers in frontend
-- **Critical discussion (Phase 6)** will thoroughly address model limitations and ethical concerns
+- Lottery is inherently random - no algorithm can reliably predict future draws
+- This is an educational project - demonstrates ML/XAI skills, not commercial gambling
+- Predictions should not encourage gambling addiction - will include disclaimers in frontend
+- Critical discussion (Phase 6) will thoroughly address model limitations and ethical concerns
 
 ---
 
 **References**:
-[^1]: Prokhorenkova, L., et al. (2018). "CatBoost: unbiased boosting with categorical features." NeurIPS 2018.
-[^2]: Dorogush, A. V., et al. (2018). "CatBoost: gradient boosting with categorical features support." arXiv preprint arXiv:1810.11363.
+1. Prokhorenkova, L., et al. (2018). "CatBoost: unbiased boosting with categorical features." NeurIPS 2018.
+2. Dorogush, A. V., et al. (2018). "CatBoost: gradient boosting with categorical features support." arXiv preprint arXiv:1810.11363.
 
 ---
 
-**Document Version**: 1.0
+**Document Version**: 2.0
 **Date**: 2026-01-15
-**Author**: MSc AI - Applied ML Assignment
+**Course**: MSc AI - Applied Machine Learning Assignment
