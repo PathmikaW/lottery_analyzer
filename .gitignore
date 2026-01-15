@@ -3,24 +3,55 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.egg
+*.egg-info/
+dist/
+build/
 .Python
 env/
 venv/
-*.egg-info/
+ENV/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
+nul
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb_checkpoints
 
 # Sample prize CSV files (can be regenerated)
 data/raw/*_with_prizes.csv
 
+# Models (trained models can be large)
+models/*.cbm
+models/*.pkl
+models/*.joblib
+models/*.bin
+
+# Outputs (generated files - keep folder structure)
+outputs/results/*.png
+outputs/results/*.jpg
+outputs/results/*.pdf
+outputs/explainability/*.png
+outputs/explainability/*.html
+
+# Node.js / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+*.log
+npm-debug.log*
+
 # Temporary files
 *.tmp
-nul
+*.temp
