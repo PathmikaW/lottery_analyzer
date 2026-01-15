@@ -8,7 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 import pandas as pd
-import numpy as np
 from pathlib import Path
 import json
 from datetime import datetime
@@ -214,35 +213,40 @@ async def predict(request: PredictionRequest):
     if not all(1 <= num <= 80 for num in request.numbers):
         raise HTTPException(status_code=400, detail="Numbers must be between 1 and 80")
 
-    # Create feature dataframe (simplified - in production would fetch from DB)
-    # For demo, using default feature values
+    # Load actual test data features for the selected lottery
+    # This uses real historical features from the test dataset
+    lottery_name_map = {
+        'MAHAJANA_SAMPATHA': 'nlb_mahajana_sampatha',
+        'nlb_mahajana_sampatha': 'nlb_mahajana_sampatha',
+        'dlb_lagna_wasana': 'dlb_lagna_wasana',
+        'DLB_LAGNA_WASANA': 'dlb_lagna_wasana'
+    }
+
+    lottery_file = lottery_name_map.get(request.lottery, request.lottery.lower())
+    test_data_path = Path(__file__).parent.parent / "data" / "splits" / f"{lottery_file}_test.csv"
+
+    if not test_data_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Test data not found for lottery: {request.lottery}. "
+                   f"Available lotteries can be fetched from /lotteries endpoint."
+        )
+
+    # Load test data
+    df_test = pd.read_csv(test_data_path)
+
     predictions = []
 
     for number in request.numbers:
-        # Create feature vector with default values
-        features = pd.DataFrame({
-            'draw_id': [request.draw_id or 10000],
-            'draw_sequence': [5000],
-            'current_gap': [5],
-            'mean_gap': [10.0],
-            'std_gap': [5.0],
-            'min_gap': [1],
-            'max_gap': [30],
-            'days_since_last': [50],
-            'appearance_rate': [0.1],
-            'frequency_last_10': [1],
-            'frequency_last_30': [3],
-            'frequency_last_50': [5],
-            'frequency_all_time': [50],
-            'temperature_score': [0.5],
-            'trend': [0],
-            'is_hot': [1],
-            'is_cold': [0],
-            'day_of_week': [1],
-            'month': [1],
-            'week_of_year': [1],
-            'is_weekend': [0]
-        })
+        # Get most recent features for this number from test data
+        number_data = df_test[df_test['number'] == number].tail(1)
+
+        if len(number_data) == 0:
+            # Number not found in test data, skip
+            continue
+
+        # Extract features in correct order
+        features = number_data[FEATURE_COLS]
 
         # Get prediction
         proba = model.predict_proba(features)[0]
@@ -291,30 +295,35 @@ async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
     if not 1 <= number <= 80:
         raise HTTPException(status_code=400, detail="Number must be between 1 and 80")
 
-    # Create feature vector (simplified)
-    features = pd.DataFrame({
-        'draw_id': [10000],
-        'draw_sequence': [5000],
-        'current_gap': [5],
-        'mean_gap': [10.0],
-        'std_gap': [5.0],
-        'min_gap': [1],
-        'max_gap': [30],
-        'days_since_last': [50],
-        'appearance_rate': [0.1],
-        'frequency_last_10': [1],
-        'frequency_last_30': [3],
-        'frequency_last_50': [5],
-        'frequency_all_time': [50],
-        'temperature_score': [0.5],
-        'trend': [0],
-        'is_hot': [1],
-        'is_cold': [0],
-        'day_of_week': [1],
-        'month': [1],
-        'week_of_year': [1],
-        'is_weekend': [0]
-    })
+    # Load actual test data features
+    lottery_name_map = {
+        'MAHAJANA_SAMPATHA': 'nlb_mahajana_sampatha',
+        'nlb_mahajana_sampatha': 'nlb_mahajana_sampatha',
+        'dlb_lagna_wasana': 'dlb_lagna_wasana',
+        'DLB_LAGNA_WASANA': 'dlb_lagna_wasana'
+    }
+
+    lottery_file = lottery_name_map.get(lottery, lottery.lower())
+    test_data_path = Path(__file__).parent.parent / "data" / "splits" / f"{lottery_file}_test.csv"
+
+    if not test_data_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Test data not found for lottery: {lottery}. Using default lottery."
+        )
+
+    # Load test data and get features for this number
+    df_test = pd.read_csv(test_data_path)
+    number_data = df_test[df_test['number'] == number].tail(1)
+
+    if len(number_data) == 0:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No historical data found for number {number} in {lottery}."
+        )
+
+    # Extract features in correct order
+    features = number_data[FEATURE_COLS]
 
     # Get prediction
     proba = model.predict_proba(features)[0]
