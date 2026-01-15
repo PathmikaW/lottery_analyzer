@@ -79,12 +79,17 @@ class PredictionResponse(BaseModel):
     timestamp: str
 
 
+class FeatureContribution(BaseModel):
+    feature: str
+    contribution: float
+
+
 class ExplanationResponse(BaseModel):
     number: int
     prediction: str
     probability: float
     feature_contributions: Dict[str, float]
-    top_5_features: List[Dict[str, float]]
+    top_5_features: List[FeatureContribution]
 
 
 class LotteryInfo(BaseModel):
@@ -335,7 +340,7 @@ async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
     # Get top 5 absolute contributions
     sorted_contributions = sorted(contributions.items(), key=lambda x: abs(x[1]), reverse=True)
     top_5_features = [
-        {"feature": feat, "contribution": round(contrib, 4)}
+        FeatureContribution(feature=feat, contribution=round(contrib, 4))
         for feat, contrib in sorted_contributions[:5]
     ]
 
