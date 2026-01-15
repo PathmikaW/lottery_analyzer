@@ -320,9 +320,17 @@ async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
     shap_values = shap_explainer.shap_values(features)
 
     # Extract feature contributions for class 1 (Appear)
+    # For binary classification, shap_values is a 2D array [1 sample, n features]
     contributions = {}
+    if isinstance(shap_values, list):
+        # If shap_values is a list (one array per class), use class 1
+        shap_array = shap_values[1] if len(shap_values) > 1 else shap_values[0]
+    else:
+        # For binary classification, CatBoost returns values for class 1 directly
+        shap_array = shap_values
+
     for i, feature in enumerate(FEATURE_COLS):
-        contributions[feature] = float(shap_values[0][i])
+        contributions[feature] = float(shap_array[0][i])
 
     # Get top 5 absolute contributions
     sorted_contributions = sorted(contributions.items(), key=lambda x: abs(x[1]), reverse=True)
