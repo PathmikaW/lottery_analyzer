@@ -290,12 +290,12 @@ npm run dev
 - [x] Session 3.3: Hyperparameter Tuning (Grid Search)
 - [x] Session 3.4: Results & Metrics (25.92% F1-Score)
 
-### 🔄 Phase 4: Explainability (In Progress)
+### ✅ Phase 4: Explainability (Completed)
 - [x] Session 4.1: SHAP Analysis Notebook
 - [x] Session 4.2: LIME Analysis Notebook
 - [x] Session 4.3: Feature Importance Comparison (SHAP vs LIME)
 - [x] Session 4.4: Explainability Documentation
-- [ ] Session 4.5: Run notebooks in Colab
+- [x] Session 4.5: Run notebooks in Colab (21 outputs generated)
 
 ### 🔄 Phase 5: Frontend (Planned)
 - [ ] Session 5.1: FastAPI Backend
@@ -329,7 +329,7 @@ npm run dev
 1. ✅ **Problem Definition & Dataset** (15 marks) - Completed
 2. ✅ **Algorithm Selection** (15 marks) - CatBoost (not taught in lectures)
 3. ✅ **Model Training & Evaluation** (20 marks) - Completed (25.92% F1-Score)
-4. 🔄 **Explainability** (20 marks) - In Progress (SHAP + LIME)
+4. ✅ **Explainability** (20 marks) - Completed (SHAP + LIME with 21 outputs)
 5. 🔄 **Critical Discussion** (10 marks) - Planned
 6. 🔄 **Report Quality** (10 marks) - Planned
 7. 🔄 **BONUS: Frontend** (10 marks) - Planned (React + FastAPI)
