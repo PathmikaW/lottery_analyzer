@@ -272,12 +272,19 @@ async def predict(request: PredictionRequest):
 
     predictions = []
 
+    # Note: The model predicts individual digits (0-9), not lottery numbers (1-80)
+    # This is based on how the data was preprocessed - each digit position is analyzed separately
+
     for number in request.numbers:
-        # Get most recent features for this number from test data
-        number_data = df_test[df_test['number'] == number].tail(1)
+        # Convert to single digit (0-9) for model compatibility
+        # The model was trained on digit analysis, not full numbers
+        digit = number % 10  # Get last digit: 15 -> 5, 7 -> 7, 80 -> 0
+
+        # Get most recent features for this digit from test data
+        number_data = df_test[df_test['number'] == digit].tail(1)
 
         if len(number_data) == 0:
-            # Number not found in test data, skip
+            # Digit not found in test data - shouldn't happen for 0-9
             continue
 
         # Extract features in correct order
@@ -298,7 +305,7 @@ async def predict(request: PredictionRequest):
             confidence = "Low"
 
         predictions.append(NumberPrediction(
-            number=number,
+            number=number,  # Return original number
             probability=round(prob_appear, 4),
             prediction=prediction,
             confidence=confidence
@@ -359,12 +366,15 @@ async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
         }
         df_test['trend'] = df_test['trend'].map(trend_mapping).fillna(0)
 
-    number_data = df_test[df_test['number'] == number].tail(1)
+    # Convert to single digit (0-9) for model compatibility
+    digit = number % 10
+
+    number_data = df_test[df_test['number'] == digit].tail(1)
 
     if len(number_data) == 0:
         raise HTTPException(
             status_code=404,
-            detail=f"No historical data found for number {number} in {lottery}."
+            detail=f"No historical data found for digit {digit} (from number {number}) in {lottery}."
         )
 
     # Extract features in correct order
