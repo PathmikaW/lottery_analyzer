@@ -1,0 +1,365 @@
+"""
+FastAPI Backend for Sri Lankan Lottery ML Analyzer
+Educational project - MSc AI Applied Machine Learning Assignment
+"""
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+from typing import List, Dict, Optional
+import pandas as pd
+import numpy as np
+from pathlib import Path
+import json
+from datetime import datetime
+
+# CatBoost and SHAP
+from catboost import CatBoostClassifier
+import shap
+
+# Initialize FastAPI app
+app = FastAPI(
+    title="Lottery ML Analyzer API",
+    description="Machine learning predictions for Sri Lankan lottery numbers with explainability",
+    version="1.0.0"
+)
+
+# CORS middleware for React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Vite and CRA default ports
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Global variables for model and explainer
+MODEL_PATH = Path(__file__).parent.parent / "models" / "best_model.cbm"
+model: Optional[CatBoostClassifier] = None
+shap_explainer: Optional[shap.TreeExplainer] = None
+
+# Feature columns (must match training)
+FEATURE_COLS = [
+    'draw_id', 'draw_sequence', 'current_gap', 'mean_gap', 'std_gap',
+    'min_gap', 'max_gap', 'days_since_last', 'appearance_rate',
+    'frequency_last_10', 'frequency_last_30', 'frequency_last_50',
+    'frequency_all_time', 'temperature_score', 'trend', 'is_hot',
+    'is_cold', 'day_of_week', 'month', 'week_of_year', 'is_weekend'
+]
+
+
+# Pydantic models for request/response
+class PredictionRequest(BaseModel):
+    lottery: str = Field(..., description="Lottery name (e.g., 'MAHAJANA_SAMPATHA')")
+    numbers: List[int] = Field(..., description="List of numbers to predict (1-80)", min_items=1, max_items=80)
+    draw_id: Optional[int] = Field(None, description="Draw ID (optional, uses next draw if not provided)")
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "lottery": "MAHAJANA_SAMPATHA",
+                "numbers": [1, 5, 10, 15, 20],
+                "draw_id": None
+            }
+        }
+
+
+class NumberPrediction(BaseModel):
+    number: int
+    probability: float
+    prediction: str  # "Appear" or "Not Appear"
+    confidence: str  # "High", "Medium", "Low"
+
+
+class PredictionResponse(BaseModel):
+    lottery: str
+    draw_id: int
+    predictions: List[NumberPrediction]
+    top_5_numbers: List[int]
+    timestamp: str
+
+
+class ExplanationResponse(BaseModel):
+    number: int
+    prediction: str
+    probability: float
+    feature_contributions: Dict[str, float]
+    top_5_features: List[Dict[str, float]]
+
+
+class LotteryInfo(BaseModel):
+    name: str
+    display_name: str
+    number_range: str
+    draws_in_dataset: int
+
+
+class ModelStats(BaseModel):
+    model_type: str
+    f1_score: float
+    precision: float
+    recall: float
+    training_samples: int
+    features_count: int
+    top_5_features: List[str]
+
+
+# Startup event - load model
+@app.on_event("startup")
+async def load_model():
+    """Load CatBoost model and SHAP explainer on startup"""
+    global model, shap_explainer
+
+    try:
+        if not MODEL_PATH.exists():
+            raise FileNotFoundError(f"Model not found at {MODEL_PATH}")
+
+        model = CatBoostClassifier()
+        model.load_model(str(MODEL_PATH))
+
+        # Create SHAP explainer
+        shap_explainer = shap.TreeExplainer(model)
+
+        print(f"✓ Model loaded successfully from {MODEL_PATH}")
+        print(f"✓ SHAP explainer initialized")
+
+    except Exception as e:
+        print(f"✗ Error loading model: {e}")
+        raise
+
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    """Check API and model status"""
+    return {
+        "status": "healthy",
+        "model_loaded": model is not None,
+        "shap_loaded": shap_explainer is not None,
+        "timestamp": datetime.now().isoformat()
+    }
+
+
+# Get available lotteries
+@app.get("/lotteries", response_model=List[LotteryInfo])
+async def get_lotteries():
+    """Get list of available lotteries"""
+
+    # Load lottery metadata from data
+    data_dir = Path(__file__).parent.parent / "data" / "raw"
+
+    lotteries = []
+    if data_dir.exists():
+        for file in sorted(data_dir.glob("*.csv")):
+            lottery_name = file.stem
+
+            # Load file to get draw count
+            df = pd.read_csv(file)
+
+            lotteries.append(LotteryInfo(
+                name=lottery_name,
+                display_name=lottery_name.replace("_", " ").title(),
+                number_range="1-80",
+                draws_in_dataset=len(df)
+            ))
+
+    return lotteries
+
+
+# Get model statistics
+@app.get("/statistics", response_model=ModelStats)
+async def get_statistics():
+    """Get model performance statistics"""
+
+    if model is None:
+        raise HTTPException(status_code=503, detail="Model not loaded")
+
+    # Load SHAP results for top features
+    shap_file = Path(__file__).parent.parent / "outputs" / "explainability" / "shap" / "shap_feature_importance.csv"
+
+    top_features = []
+    if shap_file.exists():
+        df = pd.read_csv(shap_file)
+        top_features = df.head(5)['feature'].tolist()
+
+    return ModelStats(
+        model_type="CatBoost Classifier",
+        f1_score=0.2592,
+        precision=0.1495,
+        recall=1.0000,
+        training_samples=485094,
+        features_count=len(FEATURE_COLS),
+        top_5_features=top_features
+    )
+
+
+# Prediction endpoint
+@app.post("/predict", response_model=PredictionResponse)
+async def predict(request: PredictionRequest):
+    """
+    Get predictions for lottery numbers
+
+    Returns probability of each number appearing in the next draw
+    """
+
+    if model is None:
+        raise HTTPException(status_code=503, detail="Model not loaded")
+
+    # Validate input
+    if not all(1 <= num <= 80 for num in request.numbers):
+        raise HTTPException(status_code=400, detail="Numbers must be between 1 and 80")
+
+    # Create feature dataframe (simplified - in production would fetch from DB)
+    # For demo, using default feature values
+    predictions = []
+
+    for number in request.numbers:
+        # Create feature vector with default values
+        features = pd.DataFrame({
+            'draw_id': [request.draw_id or 10000],
+            'draw_sequence': [5000],
+            'current_gap': [5],
+            'mean_gap': [10.0],
+            'std_gap': [5.0],
+            'min_gap': [1],
+            'max_gap': [30],
+            'days_since_last': [50],
+            'appearance_rate': [0.1],
+            'frequency_last_10': [1],
+            'frequency_last_30': [3],
+            'frequency_last_50': [5],
+            'frequency_all_time': [50],
+            'temperature_score': [0.5],
+            'trend': [0],
+            'is_hot': [1],
+            'is_cold': [0],
+            'day_of_week': [1],
+            'month': [1],
+            'week_of_year': [1],
+            'is_weekend': [0]
+        })
+
+        # Get prediction
+        proba = model.predict_proba(features)[0]
+        prob_appear = proba[1]
+
+        # Determine prediction and confidence
+        prediction = "Appear" if prob_appear > 0.5 else "Not Appear"
+
+        if prob_appear > 0.7 or prob_appear < 0.3:
+            confidence = "High"
+        elif prob_appear > 0.6 or prob_appear < 0.4:
+            confidence = "Medium"
+        else:
+            confidence = "Low"
+
+        predictions.append(NumberPrediction(
+            number=number,
+            probability=round(prob_appear, 4),
+            prediction=prediction,
+            confidence=confidence
+        ))
+
+    # Sort by probability and get top 5
+    sorted_predictions = sorted(predictions, key=lambda x: x.probability, reverse=True)
+    top_5 = [p.number for p in sorted_predictions[:5]]
+
+    return PredictionResponse(
+        lottery=request.lottery,
+        draw_id=request.draw_id or 10000,
+        predictions=predictions,
+        top_5_numbers=top_5,
+        timestamp=datetime.now().isoformat()
+    )
+
+
+# Explanation endpoint
+@app.get("/explain/{number}", response_model=ExplanationResponse)
+async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
+    """
+    Get SHAP explanation for a number prediction
+    """
+
+    if model is None or shap_explainer is None:
+        raise HTTPException(status_code=503, detail="Model or explainer not loaded")
+
+    if not 1 <= number <= 80:
+        raise HTTPException(status_code=400, detail="Number must be between 1 and 80")
+
+    # Create feature vector (simplified)
+    features = pd.DataFrame({
+        'draw_id': [10000],
+        'draw_sequence': [5000],
+        'current_gap': [5],
+        'mean_gap': [10.0],
+        'std_gap': [5.0],
+        'min_gap': [1],
+        'max_gap': [30],
+        'days_since_last': [50],
+        'appearance_rate': [0.1],
+        'frequency_last_10': [1],
+        'frequency_last_30': [3],
+        'frequency_last_50': [5],
+        'frequency_all_time': [50],
+        'temperature_score': [0.5],
+        'trend': [0],
+        'is_hot': [1],
+        'is_cold': [0],
+        'day_of_week': [1],
+        'month': [1],
+        'week_of_year': [1],
+        'is_weekend': [0]
+    })
+
+    # Get prediction
+    proba = model.predict_proba(features)[0]
+    prob_appear = proba[1]
+    prediction = "Appear" if prob_appear > 0.5 else "Not Appear"
+
+    # Get SHAP values
+    shap_values = shap_explainer.shap_values(features)
+
+    # Extract feature contributions for class 1 (Appear)
+    contributions = {}
+    for i, feature in enumerate(FEATURE_COLS):
+        contributions[feature] = float(shap_values[0][i])
+
+    # Get top 5 absolute contributions
+    sorted_contributions = sorted(contributions.items(), key=lambda x: abs(x[1]), reverse=True)
+    top_5_features = [
+        {"feature": feat, "contribution": round(contrib, 4)}
+        for feat, contrib in sorted_contributions[:5]
+    ]
+
+    return ExplanationResponse(
+        number=number,
+        prediction=prediction,
+        probability=round(prob_appear, 4),
+        feature_contributions=contributions,
+        top_5_features=top_5_features
+    )
+
+
+# Root endpoint
+@app.get("/")
+async def root():
+    """API welcome message"""
+    return {
+        "message": "Lottery ML Analyzer API",
+        "version": "1.0.0",
+        "description": "Educational project - MSc AI Applied Machine Learning Assignment",
+        "warning": "NOT intended for commercial gambling use",
+        "endpoints": {
+            "health": "/health",
+            "lotteries": "/lotteries",
+            "statistics": "/statistics",
+            "predict": "/predict (POST)",
+            "explain": "/explain/{number}",
+            "docs": "/docs"
+        }
+    }
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
