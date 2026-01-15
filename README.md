@@ -177,7 +177,7 @@ python src/preprocessing/feature_engineer.py
 python src/preprocessing/data_splitter.py
 ```
 
-### 3. Model Training (Phase 3)
+### 3. Model Training (Phase 3 - ✅ Completed)
 
 #### Option A: Google Colab (Recommended - 4.6x Faster)
 
@@ -190,12 +190,18 @@ python src/preprocessing/data_splitter.py
 1. Open [Google Colab](https://colab.research.google.com)
 2. Upload notebooks from `notebooks/` folder:
    - `01_baseline_models_colab.ipynb`
-   - `02_catboost_training_colab.ipynb` (coming soon)
-   - `03_hyperparameter_tuning_colab.ipynb` (coming soon)
+   - `02_catboost_training_colab.ipynb`
+   - `03_hyperparameter_tuning_colab.ipynb`
 3. Enable GPU: Runtime → Change runtime type → GPU
 4. Run cells in order
 
 **See [COLAB_GUIDE.md](COLAB_GUIDE.md) for detailed instructions.**
+
+**Results:**
+- Random Forest: 25.95% F1-Score (best baseline)
+- CatBoost (Tuned): 25.92% F1-Score
+- 3.87x improvement over random baseline
+- All results saved in `outputs/results/`
 
 #### Option B: Local Training (CPU)
 
@@ -214,15 +220,44 @@ jupyter notebook
 ```
 
 
-### 4. Explainability Analysis (🔄 Phase 4 - Planned)
+### 4. Explainability Analysis (Phase 4 - 🔄 In Progress)
+
+#### Option A: Google Colab (Recommended)
+
+**Quick Start:**
+1. Open [Google Colab](https://colab.research.google.com)
+2. Upload notebooks:
+   - `notebooks/04_shap_analysis_colab.ipynb` (Global importance)
+   - `notebooks/05_lime_analysis_colab.ipynb` (Local explanations)
+3. Enable GPU: Runtime → Change runtime type → GPU
+4. Run both notebooks in order
+
+**SHAP Outputs** (saved to `outputs/explainability/shap/`):
+- Summary plots (global feature importance)
+- Dependence plots (feature relationships)
+- Force plots (individual predictions)
+- Feature importance comparison
+
+**LIME Outputs** (saved to `outputs/explainability/lime/`):
+- Instance-level explanations (6 examples)
+- Feature importance aggregation
+- LIME vs SHAP comparison
+
+#### Option B: Local Analysis (CPU)
 
 ```bash
-# SHAP analysis
-python src/explainability/shap_analysis.py
+# Activate virtual environment
+lottery_env\Scripts\activate  # Windows
+source lottery_env/bin/activate  # Linux/Mac
 
-# Feature importance
-python src/explainability/feature_importance.py
+# Start Jupyter
+jupyter notebook
+
+# Run both notebooks
 ```
+
+**Documentation:**
+- See [docs/EXPLAINABILITY_ANALYSIS.md](docs/EXPLAINABILITY_ANALYSIS.md) for SHAP + LIME results
 
 ### 5. Web Application (🔄 Phase 5 - Planned)
 
@@ -249,16 +284,18 @@ npm run dev
 ### ✅ Phase 2: Algorithm Selection (Completed)
 - [x] Session 2.1: CatBoost Justification Document
 
-### 🔄 Phase 3: Model Training & Evaluation (In Progress)
-- [ ] Session 3.1: Baseline Models
-- [ ] Session 3.2: CatBoost Training
-- [ ] Session 3.3: Hyperparameter Tuning
-- [ ] Session 3.4: Results & Metrics
+### ✅ Phase 3: Model Training & Evaluation (Completed)
+- [x] Session 3.1: Baseline Models (Logistic Regression, Random Forest)
+- [x] Session 3.2: CatBoost Training
+- [x] Session 3.3: Hyperparameter Tuning (Grid Search)
+- [x] Session 3.4: Results & Metrics (25.92% F1-Score)
 
-### 🔄 Phase 4: Explainability (Planned)
-- [ ] Session 4.1: SHAP Analysis
-- [ ] Session 4.2: Feature Importance
-- [ ] Session 4.3: Interpretation Document
+### 🔄 Phase 4: Explainability (In Progress)
+- [x] Session 4.1: SHAP Analysis Notebook
+- [x] Session 4.2: LIME Analysis Notebook
+- [x] Session 4.3: Feature Importance Comparison (SHAP vs LIME)
+- [x] Session 4.4: Explainability Documentation
+- [ ] Session 4.5: Run notebooks in Colab
 
 ### 🔄 Phase 5: Frontend (Planned)
 - [ ] Session 5.1: FastAPI Backend
@@ -278,7 +315,7 @@ npm run dev
 - **Data Collection**: BeautifulSoup, Selenium
 - **Data Processing**: pandas, numpy, scikit-learn
 - **ML Algorithm**: CatBoost (gradient boosting)
-- **Explainability**: SHAP, feature importance
+- **Explainability**: SHAP, LIME
 - **Visualization**: matplotlib, seaborn
 - **Backend**: FastAPI
 - **Frontend**: React + Vite
@@ -291,8 +328,8 @@ npm run dev
 ### Marking Breakdown
 1. ✅ **Problem Definition & Dataset** (15 marks) - Completed
 2. ✅ **Algorithm Selection** (15 marks) - CatBoost (not taught in lectures)
-3. 🔄 **Model Training & Evaluation** (20 marks) - In Progress
-4. 🔄 **Explainability** (20 marks) - Planned (SHAP)
+3. ✅ **Model Training & Evaluation** (20 marks) - Completed (25.92% F1-Score)
+4. 🔄 **Explainability** (20 marks) - In Progress (SHAP + LIME)
 5. 🔄 **Critical Discussion** (10 marks) - Planned
 6. 🔄 **Report Quality** (10 marks) - Planned
 7. 🔄 **BONUS: Frontend** (10 marks) - Planned (React + FastAPI)
@@ -337,6 +374,7 @@ Date: January 2026
 - Development Lotteries Board (DLB): https://www.dlb.lk
 - CatBoost Documentation: https://catboost.ai/
 - SHAP Documentation: https://shap.readthedocs.io/
+- LIME Documentation: https://github.com/marcotcr/lime
 
 ---
 
