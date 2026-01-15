@@ -10,6 +10,7 @@ numpy>=1.24.0
 
 # Machine Learning
 scikit-learn>=1.3.0
+catboost>=1.2.0
 xgboost>=2.0.0
 
 # Explainability
@@ -22,3 +23,5 @@ seaborn>=0.13.0
 
 # Utilities
 tqdm>=4.66.0
+jupyter>=1.0.0
+notebook>=7.0.0

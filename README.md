@@ -81,17 +81,67 @@ lottery_analyzer/
 
 ### Setup
 
+#### Option 1: Automated Setup with Virtual Environment (Recommended)
+
+**Windows:**
+```bash
+# Run setup script
+setup_env.bat
+```
+
+**Linux/Mac:**
+```bash
+# Run setup script
+bash setup_env.sh
+```
+
+This will:
+- Create a virtual environment (`lottery_env/`)
+- Install all Python dependencies from `requirements.txt`
+- Activate the environment automatically
+
+#### Option 2: Manual Setup
+
 ```bash
 # Clone repository
 git clone <repository-url>
 cd lottery_analyzer
 
+# Create virtual environment (recommended)
+python -m venv lottery_env
+
+# Activate virtual environment
+# Windows:
+lottery_env\Scripts\activate
+# Linux/Mac:
+source lottery_env/bin/activate
+
 # Install Python dependencies
+pip install --upgrade pip
 pip install -r requirements.txt
 
 # (Optional) Install frontend dependencies
 cd frontend
 npm install
+```
+
+### Activating the Environment Later
+
+After initial setup, activate the virtual environment:
+
+**Windows:**
+```bash
+lottery_env\Scripts\activate
+```
+
+**Linux/Mac:**
+```bash
+source lottery_env/bin/activate
+```
+
+To deactivate:
+```bash
+deactivate
 ```
 
 ---
