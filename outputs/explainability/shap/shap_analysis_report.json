@@ -1,0 +1,40 @@
+{
+  "analysis_date": "2026-01-15 12:18:38",
+  "model_file": "best_model.cbm",
+  "sample_size": 10000,
+  "total_features": 21,
+  "top_5_features_shap": [
+    "appearance_rate",
+    "days_since_last",
+    "draw_sequence",
+    "frequency_last_10",
+    "draw_id"
+  ],
+  "top_5_features_catboost": [
+    "draw_sequence",
+    "current_gap",
+    "days_since_last",
+    "appearance_rate",
+    "draw_id"
+  ],
+  "mean_abs_shap_values": {
+    "appearance_rate": 0.011438549175033797,
+    "days_since_last": 0.0073793981390329905,
+    "draw_sequence": 0.004321324008502306,
+    "frequency_last_10": 0.002964255162011785,
+    "draw_id": 0.00271785321483781
+  },
+  "outputs_generated": [
+    "shap_values.npy",
+    "shap_sample_data.csv",
+    "shap_summary_plot.png",
+    "shap_bar_plot.png",
+    "shap_feature_importance.csv",
+    "shap_dependence_plots.png",
+    "shap_force_plot_positive.png",
+    "shap_force_plot_negative.png",
+    "shap_waterfall_plot_positive.png",
+    "importance_comparison.csv",
+    "importance_comparison_plot.png"
+  ]
+}
