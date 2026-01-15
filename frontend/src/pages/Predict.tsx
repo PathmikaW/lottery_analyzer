@@ -116,13 +116,18 @@ export default function Predict() {
                   {lotteries.length > 0 ? (
                     lotteries.map((lottery) => (
                       <option key={lottery.name} value={lottery.name}>
-                        {lottery.display_name} ({lottery.draws_in_dataset} draws)
+                        {lottery.display_name} - {lottery.draw_format} ({lottery.draws_in_dataset} draws)
                       </option>
                     ))
                   ) : (
                     <option>Loading lotteries...</option>
                   )}
                 </select>
+                {lotteries.length > 0 && selectedLottery && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    <strong>Draw Format:</strong> {lotteries.find(l => l.name === selectedLottery)?.draw_format}
+                  </p>
+                )}
               </div>
 
               {/* Quick Pick Buttons */}

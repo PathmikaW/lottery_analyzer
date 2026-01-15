@@ -29,6 +29,9 @@ export interface LotteryInfo {
   display_name: string
   number_range: string
   draws_in_dataset: number
+  numbers_per_draw: number
+  has_letter: boolean
+  draw_format: string
 }
 
 export interface ModelStats {

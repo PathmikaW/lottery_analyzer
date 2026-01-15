@@ -96,6 +96,9 @@ class LotteryInfo(BaseModel):
     display_name: str
     number_range: str
     draws_in_dataset: int
+    numbers_per_draw: int
+    has_letter: bool
+    draw_format: str  # e.g., "6 numbers + letter" or "4 numbers"
 
 
 class ModelStats(BaseModel):
@@ -157,14 +160,37 @@ async def get_lotteries():
         for file in sorted(data_dir.glob("*.csv")):
             lottery_name = file.stem
 
-            # Load file to get draw count
+            # Load file to get draw count, numbers per draw, and letter
             df = pd.read_csv(file)
+
+            # Extract numbers_per_draw and has_letter from first row
+            numbers_per_draw = 6  # Default
+            has_letter = False
+            if len(df) > 0:
+                if 'numbers' in df.columns:
+                    first_numbers = df['numbers'].iloc[0]
+                    if isinstance(first_numbers, str):
+                        numbers_per_draw = len(first_numbers.split(';'))
+
+                # Check if lottery has a letter column with non-empty values
+                if 'letter' in df.columns:
+                    first_letter = df['letter'].iloc[0]
+                    has_letter = pd.notna(first_letter) and str(first_letter).strip() != ''
+
+            # Create format string
+            if has_letter:
+                draw_format = f"{numbers_per_draw} numbers + letter"
+            else:
+                draw_format = f"{numbers_per_draw} numbers"
 
             lotteries.append(LotteryInfo(
                 name=lottery_name,
                 display_name=lottery_name.replace("_", " ").title(),
                 number_range="1-80",
-                draws_in_dataset=len(df)
+                draws_in_dataset=len(df),
+                numbers_per_draw=numbers_per_draw,
+                has_letter=has_letter,
+                draw_format=draw_format
             ))
 
     return lotteries
