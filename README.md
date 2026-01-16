@@ -154,9 +154,6 @@ deactivate
 # Run all scrapers
 python src/utils/run_scrapers.py
 
-# Scrape with prizes (NLB only)
-python src/utils/scrape_with_prizes.py
-
 # Generate data quality report
 python src/utils/generate_reports.py
 ```

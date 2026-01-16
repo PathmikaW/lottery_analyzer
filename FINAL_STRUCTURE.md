@@ -62,7 +62,6 @@ lottery_analyzer/
 │   │
 │   └── utils/                                 ✅ Utilities
 │       ├── run_scrapers.py                   # Run all scrapers
-│       ├── scrape_with_prizes.py             # Scrape NLB prizes
 │       └── generate_reports.py               # Generate data quality reports
 │
 ├── 📓 NOTEBOOKS (Interactive Analysis & Demo)
