@@ -49,15 +49,15 @@ FEATURE_COLS = [
 
 # Pydantic models for request/response
 class PredictionRequest(BaseModel):
-    lottery: str = Field(..., description="Lottery name (e.g., 'MAHAJANA_SAMPATHA')")
-    numbers: List[int] = Field(..., description="List of numbers to predict (1-80)", min_items=1, max_items=80)
+    lottery: str = Field(..., description="Lottery name (e.g., 'nlb_mahajana_sampatha')")
+    numbers: List[int] = Field(..., description="List of numbers to predict (0-80)", min_items=1, max_items=80)
     draw_id: Optional[int] = Field(None, description="Draw ID (optional, uses next draw if not provided)")
 
     class Config:
         schema_extra = {
             "example": {
-                "lottery": "MAHAJANA_SAMPATHA",
-                "numbers": [1, 5, 10, 15, 20],
+                "lottery": "nlb_mahajana_sampatha",
+                "numbers": [0, 1, 5, 7, 9],
                 "draw_id": None
             }
         }
@@ -247,8 +247,8 @@ async def predict(request: PredictionRequest):
         raise HTTPException(status_code=503, detail="Model not loaded")
 
     # Validate input
-    if not all(1 <= num <= 80 for num in request.numbers):
-        raise HTTPException(status_code=400, detail="Numbers must be between 1 and 80")
+    if not all(0 <= num <= 80 for num in request.numbers):
+        raise HTTPException(status_code=400, detail="Numbers must be between 0 and 80")
 
     # Load actual test data features for the selected lottery
     # This uses real historical features from the test dataset
