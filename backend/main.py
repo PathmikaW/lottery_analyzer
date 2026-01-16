@@ -358,8 +358,8 @@ async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
     if model is None or shap_explainer is None:
         raise HTTPException(status_code=503, detail="Model or explainer not loaded")
 
-    if not 1 <= number <= 80:
-        raise HTTPException(status_code=400, detail="Number must be between 1 and 80")
+    if not 0 <= number <= 80:
+        raise HTTPException(status_code=400, detail="Number must be between 0 and 80")
 
     # Load actual test data features
     lottery_name_map = {
