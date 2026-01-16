@@ -359,7 +359,6 @@ export default function Predict() {
                         <th className="text-left py-3 px-4 font-semibold">Rank</th>
                         <th className="text-left py-3 px-4 font-semibold">Number</th>
                         <th className="text-left py-3 px-4 font-semibold">Probability</th>
-                        <th className="text-left py-3 px-4 font-semibold">Prediction</th>
                         <th className="text-left py-3 px-4 font-semibold">Confidence</th>
                       </tr>
                     </thead>
@@ -386,13 +385,6 @@ export default function Predict() {
                                   {(pred.probability * 100).toFixed(2)}%
                                 </span>
                               </div>
-                            </td>
-                            <td className="py-3 px-4">
-                              <Badge
-                                variant={pred.prediction === 'Appear' ? 'default' : 'secondary'}
-                              >
-                                {pred.prediction}
-                              </Badge>
                             </td>
                             <td className="py-3 px-4">
                               <Badge className={getConfidenceColor(pred.confidence)}>
