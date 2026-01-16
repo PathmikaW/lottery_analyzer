@@ -1,12 +1,16 @@
+import { useState } from 'react'
 import { BarChart3, Zap, Target, BookOpen, Brain, Database, Settings, FileCode, ExternalLink } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
-import { Badge } from '../components/ui/badge'
 import { Button } from '../components/ui/button'
+import FileViewer from '../components/FileViewer'
 
 export default function Results() {
-  const viewLocalFile = (path: string) => {
-    // For local development, open VS Code or default editor
-    alert(`To view this file, please open: ${path}\n\nIn VS Code: Ctrl+P and type: ${path}`)
+  const [viewerOpen, setViewerOpen] = useState(false)
+  const [currentFile, setCurrentFile] = useState({ path: '', name: '' })
+
+  const viewFile = (path: string, name: string) => {
+    setCurrentFile({ path, name })
+    setViewerOpen(true)
   }
 
   return (
@@ -41,8 +45,7 @@ export default function Results() {
               <div className="p-4 bg-white rounded-lg border border-purple-200">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">1. Problem Definition & Dataset</h4>
-                  <Badge className="bg-green-600">15 marks</Badge>
-                </div>
+                  </div>
                 <p className="text-sm text-gray-600">
                   ✓ Lottery number prediction problem defined<br />
                   ✓ Web scraped dataset from NLB & DLB<br />
@@ -54,8 +57,7 @@ export default function Results() {
               <div className="p-4 bg-white rounded-lg border border-purple-200">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">2. Algorithm Selection</h4>
-                  <Badge className="bg-green-600">15 marks</Badge>
-                </div>
+                  </div>
                 <p className="text-sm text-gray-600">
                   ✓ CatBoost Gradient Boosting (not taught in lectures)<br />
                   ✓ Justification: handles categoricals, class imbalance<br />
@@ -66,8 +68,7 @@ export default function Results() {
               <div className="p-4 bg-white rounded-lg border border-purple-200">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">3. Model Training & Evaluation</h4>
-                  <Badge className="bg-green-600">20 marks</Badge>
-                </div>
+                  </div>
                 <p className="text-sm text-gray-600">
                   ✓ 70/15/15 train/validation/test split<br />
                   ✓ Grid search hyperparameter tuning (100+ configs)<br />
@@ -79,8 +80,7 @@ export default function Results() {
               <div className="p-4 bg-white rounded-lg border border-purple-200">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">4. Explainability & Interpretation</h4>
-                  <Badge className="bg-green-600">20 marks</Badge>
-                </div>
+                  </div>
                 <p className="text-sm text-gray-600">
                   ✓ SHAP analysis (global + local explanations)<br />
                   ✓ LIME analysis (10 instances explained)<br />
@@ -92,8 +92,7 @@ export default function Results() {
               <div className="p-4 bg-white rounded-lg border border-purple-200">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">5. Critical Discussion</h4>
-                  <Badge className="bg-yellow-600">10 marks</Badge>
-                </div>
+                  </div>
                 <p className="text-sm text-gray-600">
                   ✓ Model limitations acknowledged<br />
                   ✓ Inherent randomness of lottery analyzed<br />
@@ -105,8 +104,7 @@ export default function Results() {
               <div className="p-4 bg-white rounded-lg border border-purple-200">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold">6. Report Quality & Clarity</h4>
-                  <Badge className="bg-yellow-600">10 marks</Badge>
-                </div>
+                  </div>
                 <p className="text-sm text-gray-600">
                   ✓ Clear documentation and code structure<br />
                   ✓ Comprehensive README and notebooks<br />
@@ -118,8 +116,7 @@ export default function Results() {
               <div className="p-4 bg-white rounded-lg border-2 border-green-400 md:col-span-2">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-green-900">7. BONUS: Front-End Integration</h4>
-                  <Badge className="bg-green-600">+10 marks</Badge>
-                </div>
+                  </div>
                 <p className="text-sm text-green-700">
                   ✓ React + TypeScript + TailwindCSS professional UI<br />
                   ✓ FastAPI backend serving predictions & explanations<br />
@@ -138,7 +135,7 @@ export default function Results() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5 text-blue-600" />
-              1. Problem Definition & Dataset Collection (15 marks)
+              1. Problem Definition & Dataset Collection
             </CardTitle>
             <CardDescription>
               Web-scraped Sri Lankan lottery data with engineered features
@@ -206,7 +203,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('src/preprocessing/feature_engineer.py')}
+                  onClick={() => viewFile('src/preprocessing/feature_engineer.py', 'feature_engineer.py')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -215,7 +212,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('src/preprocessing/data_cleaner.py')}
+                  onClick={() => viewFile('src/preprocessing/data_cleaner.py', 'data_cleaner.py')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -224,7 +221,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('src/preprocessing/data_splitter.py')}
+                  onClick={() => viewFile('src/preprocessing/data_splitter.py', 'data_splitter.py')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -233,7 +230,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('src/preprocessing/data_validator.py')}
+                  onClick={() => viewFile('src/preprocessing/data_validator.py', 'data_validator.py')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -249,7 +246,7 @@ export default function Results() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Brain className="h-5 w-5 text-purple-600" />
-              2. Algorithm Selection: CatBoost Gradient Boosting (15 marks)
+              2. Algorithm Selection: CatBoost Gradient Boosting
             </CardTitle>
             <CardDescription>
               Why CatBoost was chosen over other algorithms
@@ -308,7 +305,7 @@ export default function Results() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="h-5 w-5 text-green-600" />
-              3. Model Training & Evaluation (20 marks)
+              3. Model Training & Evaluation
             </CardTitle>
             <CardDescription>
               Baseline comparison, hyperparameter tuning, and performance metrics
@@ -502,7 +499,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('notebooks/01_baseline_models_colab.ipynb')}
+                  onClick={() => viewFile('notebooks/01_baseline_models_colab.ipynb', '01_baseline_models.ipynb')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -511,7 +508,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('notebooks/02_catboost_training_colab.ipynb')}
+                  onClick={() => viewFile('notebooks/02_catboost_training_colab.ipynb', '02_catboost_training.ipynb')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -520,7 +517,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('notebooks/03_hyperparameter_tuning_colab.ipynb')}
+                  onClick={() => viewFile('notebooks/03_hyperparameter_tuning_colab.ipynb', '03_hyperparameter_tuning.ipynb')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -536,7 +533,7 @@ export default function Results() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Zap className="h-5 w-5 text-orange-600" />
-              4. Explainability & Interpretation (20 marks)
+              4. Explainability & Interpretation
             </CardTitle>
             <CardDescription>
               SHAP and LIME analysis showing what the model learned
@@ -711,7 +708,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('notebooks/04_shap_analysis_colab.ipynb')}
+                  onClick={() => viewFile('notebooks/04_shap_analysis_colab.ipynb', '04_shap_analysis.ipynb')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -720,7 +717,7 @@ export default function Results() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => viewLocalFile('notebooks/05_lime_analysis_colab.ipynb')}
+                  onClick={() => viewFile('notebooks/05_lime_analysis_colab.ipynb', '05_lime_analysis.ipynb')}
                   className="justify-start"
                 >
                   <ExternalLink className="h-3 w-3 mr-2" />
@@ -736,7 +733,7 @@ export default function Results() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-orange-600" />
-              5. Critical Discussion (10 marks)
+              5. Critical Discussion
             </CardTitle>
             <CardDescription>
               Limitations, bias risks, and ethical considerations
@@ -857,6 +854,14 @@ export default function Results() {
           </CardContent>
         </Card>
       </div>
+
+      {/* File Viewer Dialog */}
+      <FileViewer
+        isOpen={viewerOpen}
+        onClose={() => setViewerOpen(false)}
+        filePath={currentFile.path}
+        fileName={currentFile.name}
+      />
     </div>
   )
 }
