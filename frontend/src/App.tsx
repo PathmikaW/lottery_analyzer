@@ -3,6 +3,7 @@ import { Menu, X, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import Home from './pages/Home'
 import Predict from './pages/Predict'
+import Results from './pages/Results'
 import Explain from './pages/Explain'
 import About from './pages/About'
 import { Button } from './components/ui/button'
@@ -32,6 +33,9 @@ function App() {
                 </Button>
                 <Button variant="ghost" asChild>
                   <Link to="/predict">Predict</Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link to="/results">Results</Link>
                 </Button>
                 <Button variant="ghost" asChild>
                   <Link to="/explain">Explain</Link>
@@ -74,6 +78,13 @@ function App() {
                   Predict
                 </Link>
                 <Link
+                  to="/results"
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Results
+                </Link>
+                <Link
                   to="/explain"
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
                   onClick={() => setMobileMenuOpen(false)}
@@ -97,6 +108,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/predict" element={<Predict />} />
+            <Route path="/results" element={<Results />} />
             <Route path="/explain" element={<Explain />} />
             <Route path="/about" element={<About />} />
           </Routes>
