@@ -198,21 +198,28 @@ export default function Predict() {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>
-              Select Numbers {lotteries.find(l => l.name === selectedLottery)?.number_range ?
-                `(${lotteries.find(l => l.name === selectedLottery)?.number_range})` :
-                '(1-80)'}
+              Select Numbers {lotteries.find(l => l.name === selectedLottery)?.number_range
+                ? `(${lotteries.find(l => l.name === selectedLottery)?.number_range})`
+                : '(Loading...)'}
             </CardTitle>
             <CardDescription>Click numbers to select/deselect (max 20)</CardDescription>
           </CardHeader>
           <CardContent>
-            {lotteries.find(l => l.name === selectedLottery) && (() => {
-              const lottery = lotteries.find(l => l.name === selectedLottery)!
+            {(() => {
+              const lottery = lotteries.find(l => l.name === selectedLottery)
+              if (!lottery || !lottery.number_range) {
+                return <div className="text-center py-8 text-gray-500">Loading lottery data...</div>
+              }
+
               const [min, max] = lottery.number_range.split('-').map(Number)
               const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min)
 
               // Determine grid columns based on number range
-              const gridCols = max - min + 1 <= 10
+              const totalNumbers = max - min + 1
+              const gridCols = totalNumbers <= 10
                 ? 'grid-cols-5 sm:grid-cols-10'  // 10 numbers: 5-10 columns
+                : totalNumbers <= 50
+                ? 'grid-cols-8 sm:grid-cols-10'  // 50 numbers: 8-10 columns
                 : 'grid-cols-8 sm:grid-cols-10 md:grid-cols-16 lg:grid-cols-20'  // 80 numbers: 8-20 columns
 
               return (
