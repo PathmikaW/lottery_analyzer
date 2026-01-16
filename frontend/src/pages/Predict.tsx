@@ -27,6 +27,13 @@ export default function Predict() {
     fetchLotteries()
   }, [])
 
+  // Clear selections when lottery changes
+  useEffect(() => {
+    setSelectedNumbers([])
+    setPredictions(null)
+    setError(null)
+  }, [selectedLottery])
+
   const toggleNumber = (number: number) => {
     if (selectedNumbers.includes(number)) {
       setSelectedNumbers(selectedNumbers.filter((n) => n !== number))
@@ -36,9 +43,15 @@ export default function Predict() {
   }
 
   const selectQuickPick = (count: number) => {
+    // Get number range for selected lottery
+    const lottery = lotteries.find(l => l.name === selectedLottery)
+    if (!lottery) return
+
+    const [min, max] = lottery.number_range.split('-').map(Number)
+
     const numbers: number[] = []
     while (numbers.length < count) {
-      const num = Math.floor(Math.random() * 80) + 1
+      const num = Math.floor(Math.random() * (max - min + 1)) + min
       if (!numbers.includes(num)) {
         numbers.push(num)
       }
@@ -184,34 +197,51 @@ export default function Predict() {
         {/* Number Grid */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Select Numbers (1-80)</CardTitle>
+            <CardTitle>
+              Select Numbers {lotteries.find(l => l.name === selectedLottery)?.number_range ?
+                `(${lotteries.find(l => l.name === selectedLottery)?.number_range})` :
+                '(1-80)'}
+            </CardTitle>
             <CardDescription>Click numbers to select/deselect (max 20)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-16 lg:grid-cols-20 gap-1 sm:gap-2">
-              {Array.from({ length: 80 }, (_, i) => i + 1).map((number) => {
-                const isSelected = selectedNumbers.includes(number)
-                return (
-                  <button
-                    key={number}
-                    onClick={() => toggleNumber(number)}
-                    disabled={!isSelected && selectedNumbers.length >= 20}
-                    className={`
-                      aspect-square flex items-center justify-center rounded-md text-sm font-semibold
-                      transition-all duration-200 hover:scale-110
-                      ${
-                        isSelected
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
-                      }
-                      ${!isSelected && selectedNumbers.length >= 20 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}
-                    `}
-                  >
-                    {number}
-                  </button>
-                )
-              })}
-            </div>
+            {lotteries.find(l => l.name === selectedLottery) && (() => {
+              const lottery = lotteries.find(l => l.name === selectedLottery)!
+              const [min, max] = lottery.number_range.split('-').map(Number)
+              const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min)
+
+              // Determine grid columns based on number range
+              const gridCols = max - min + 1 <= 10
+                ? 'grid-cols-5 sm:grid-cols-10'  // 10 numbers: 5-10 columns
+                : 'grid-cols-8 sm:grid-cols-10 md:grid-cols-16 lg:grid-cols-20'  // 80 numbers: 8-20 columns
+
+              return (
+                <div className={`grid ${gridCols} gap-1 sm:gap-2`}>
+                  {numbers.map((number) => {
+                    const isSelected = selectedNumbers.includes(number)
+                    return (
+                      <button
+                        key={number}
+                        onClick={() => toggleNumber(number)}
+                        disabled={!isSelected && selectedNumbers.length >= 20}
+                        className={`
+                          aspect-square flex items-center justify-center rounded-md text-sm font-semibold
+                          transition-all duration-200 hover:scale-110
+                          ${
+                            isSelected
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }
+                          ${!isSelected && selectedNumbers.length >= 20 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}
+                        `}
+                      >
+                        {number}
+                      </button>
+                    )
+                  })}
+                </div>
+              )
+            })()}
           </CardContent>
         </Card>
 

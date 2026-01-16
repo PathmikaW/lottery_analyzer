@@ -75,7 +75,8 @@ export default function About() {
             </div>
             <p className="text-sm text-gray-700">
               <strong>Date Range:</strong> 2021-04-01 to 2026-01-12 (58.2 months)<br />
-              <strong>Sources:</strong> National Lotteries Board (NLB) and Development Lotteries Board (DLB)
+              <strong>Sources:</strong> National Lotteries Board (NLB) and Development Lotteries Board (DLB)<br />
+              <strong>Number Ranges:</strong> Each lottery preserves its original number range (0-9 for some NLB, 1-80 for others)
             </p>
           </CardContent>
         </Card>

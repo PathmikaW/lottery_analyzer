@@ -154,28 +154,39 @@ async def get_lotteries():
 
     # Load lottery metadata from data
     data_dir = Path(__file__).parent.parent / "data" / "raw"
+    processed_dir = Path(__file__).parent.parent / "data" / "processed"
 
     lotteries = []
     if data_dir.exists():
         for file in sorted(data_dir.glob("*.csv")):
             lottery_name = file.stem
 
-            # Load file to get draw count, numbers per draw, and letter
-            df = pd.read_csv(file)
+            # Load raw file to get draw count, numbers per draw, and letter
+            df_raw = pd.read_csv(file)
 
             # Extract numbers_per_draw and has_letter from first row
             numbers_per_draw = 6  # Default
             has_letter = False
-            if len(df) > 0:
-                if 'numbers' in df.columns:
-                    first_numbers = df['numbers'].iloc[0]
+            if len(df_raw) > 0:
+                if 'numbers' in df_raw.columns:
+                    first_numbers = df_raw['numbers'].iloc[0]
                     if isinstance(first_numbers, str):
                         numbers_per_draw = len(first_numbers.split(';'))
 
                 # Check if lottery has a letter column with non-empty values
-                if 'letter' in df.columns:
-                    first_letter = df['letter'].iloc[0]
+                if 'letter' in df_raw.columns:
+                    first_letter = df_raw['letter'].iloc[0]
                     has_letter = pd.notna(first_letter) and str(first_letter).strip() != ''
+
+            # Get actual number range from processed featured data
+            featured_file = processed_dir / f"{lottery_name}_featured.csv"
+            number_range = "0-9"  # Default
+            if featured_file.exists():
+                df_featured = pd.read_csv(featured_file)
+                if 'number' in df_featured.columns:
+                    min_num = int(df_featured['number'].min())
+                    max_num = int(df_featured['number'].max())
+                    number_range = f"{min_num}-{max_num}"
 
             # Create format string
             if has_letter:
@@ -186,8 +197,8 @@ async def get_lotteries():
             lotteries.append(LotteryInfo(
                 name=lottery_name,
                 display_name=lottery_name.replace("_", " ").title(),
-                number_range="1-80",
-                draws_in_dataset=len(df),
+                number_range=number_range,  # Actual range from processed data
+                draws_in_dataset=len(df_raw),
                 numbers_per_draw=numbers_per_draw,
                 has_letter=has_letter,
                 draw_format=draw_format
