@@ -15,8 +15,8 @@ export default function Explain() {
 
   const handleExplain = async () => {
     const num = parseInt(number)
-    if (isNaN(num) || num < 1 || num > 80) {
-      setError('Please enter a valid number between 1 and 80')
+    if (isNaN(num) || num < 0 || num > 80) {
+      setError('Please enter a valid number between 0 and 80')
       return
     }
 
@@ -60,7 +60,7 @@ export default function Explain() {
           <CardHeader>
             <CardTitle>Explain a Number</CardTitle>
             <CardDescription>
-              Enter any number between 1-80 to see which features drive its prediction
+              Enter any number between 0-80 to see which features drive its prediction
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -68,12 +68,12 @@ export default function Explain() {
               <div className="flex-grow">
                 <input
                   type="number"
-                  min="1"
+                  min="0"
                   max="80"
                   value={number}
                   onChange={(e) => setNumber(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Enter number (e.g., 7)"
+                  placeholder="Enter number (e.g., 0, 7, 42)"
                   className="w-full px-4 py-3 text-lg border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>

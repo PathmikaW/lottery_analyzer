@@ -151,22 +151,34 @@ export default function Predict() {
               <div>
                 <label className="block text-sm font-medium mb-2">Quick Actions:</label>
                 <div className="flex flex-wrap gap-2">
-                  <Button onClick={() => selectQuickPick(5)} size="sm" variant="outline">
-                    <Shuffle className="mr-2 h-4 w-4" />
-                    Quick Pick (5)
-                  </Button>
-                  <Button onClick={() => selectQuickPick(10)} size="sm" variant="outline">
-                    <Shuffle className="mr-2 h-4 w-4" />
-                    Quick Pick (10)
-                  </Button>
-                  <Button onClick={() => selectQuickPick(20)} size="sm" variant="outline">
-                    <Shuffle className="mr-2 h-4 w-4" />
-                    Quick Pick (20)
-                  </Button>
-                  <Button onClick={clearSelection} size="sm" variant="secondary">
-                    <X className="mr-2 h-4 w-4" />
-                    Clear All
-                  </Button>
+                  {(() => {
+                    const lottery = lotteries.find(l => l.name === selectedLottery)
+                    if (!lottery) return null
+
+                    const [min, max] = lottery.number_range.split('-').map(Number)
+                    const totalNumbers = max - min + 1
+
+                    // Show appropriate Quick Pick options based on available numbers
+                    const quickPickOptions = []
+                    if (totalNumbers >= 5) quickPickOptions.push(5)
+                    if (totalNumbers >= 10) quickPickOptions.push(10)
+                    if (totalNumbers >= 20) quickPickOptions.push(20)
+
+                    return (
+                      <>
+                        {quickPickOptions.map(count => (
+                          <Button key={count} onClick={() => selectQuickPick(count)} size="sm" variant="outline">
+                            <Shuffle className="mr-2 h-4 w-4" />
+                            Quick Pick ({count})
+                          </Button>
+                        ))}
+                        <Button onClick={clearSelection} size="sm" variant="secondary">
+                          <X className="mr-2 h-4 w-4" />
+                          Clear All
+                        </Button>
+                      </>
+                    )
+                  })()}
                 </div>
               </div>
 
