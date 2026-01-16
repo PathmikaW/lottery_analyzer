@@ -48,11 +48,11 @@ export default function Explain() {
           <div className="inline-flex items-center gap-2 mb-4">
             <Brain className="h-8 w-8 text-purple-600" />
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
-              SHAP Explainability
+              Model Explainability
             </h1>
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Understand which features influence the prediction for a specific lottery number
+            SHAP and LIME analysis explaining model predictions and feature importance
           </p>
         </div>
 
@@ -115,9 +115,9 @@ export default function Explain() {
           </Card>
         )}
 
-        {/* Results */}
+        {/* Per-Number Analysis Results */}
         {explanation && (
-          <div className="space-y-6">
+          <div className="space-y-6 mb-8">
             {/* Prediction Summary */}
             <Card>
               <CardHeader>
@@ -141,17 +141,8 @@ export default function Explain() {
               </CardHeader>
             </Card>
 
-            {/* Tabbed Explainability Analysis */}
-            <Tabs defaultValue="single" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="single">Single Number</TabsTrigger>
-                <TabsTrigger value="global">Global SHAP</TabsTrigger>
-                <TabsTrigger value="lime">LIME Analysis</TabsTrigger>
-                <TabsTrigger value="dependencies">Dependencies</TabsTrigger>
-              </TabsList>
-
-              {/* Tab 1: Single Number SHAP */}
-              <TabsContent value="single" className="space-y-6">
+            {/* Single Number SHAP Analysis */}
+            <div className="space-y-6">
                 {/* SHAP Chart */}
                 <Card>
                   <CardHeader>
@@ -283,10 +274,30 @@ export default function Explain() {
                     </div>
                   </CardContent>
                 </Card>
-              </TabsContent>
+            </div>
+          </div>
+        )}
 
-              {/* Tab 2: Global SHAP Analysis */}
-              <TabsContent value="global" className="space-y-6">
+        {/* Global Explainability Analysis - Always Visible */}
+        <div className="space-y-6">
+          <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+            <CardHeader>
+              <CardTitle>Global Explainability Analysis</CardTitle>
+              <CardDescription>
+                Complete SHAP and LIME analysis across all data - independent of specific number predictions
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Tabs defaultValue="global-shap" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="global-shap">Global SHAP</TabsTrigger>
+              <TabsTrigger value="lime">LIME Analysis</TabsTrigger>
+              <TabsTrigger value="dependencies">Dependencies</TabsTrigger>
+            </TabsList>
+
+            {/* Tab 1: Global SHAP Analysis */}
+            <TabsContent value="global-shap" className="space-y-6">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -462,20 +473,18 @@ export default function Explain() {
                 </Card>
               </TabsContent>
             </Tabs>
-          </div>
-        )}
+        </div>
 
         {/* Info Section */}
         {!explanation && (
-          <Card>
+          <Card className="mt-8">
             <CardHeader>
-              <CardTitle>About SHAP Explainability</CardTitle>
+              <CardTitle>How to Use This Page</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-gray-700">
-                SHAP (SHapley Additive exPlanations) is a game-theoretic approach to explain
-                machine learning predictions. It calculates the contribution of each feature
-                to the final prediction.
+                Enter a lottery number above to see per-number SHAP analysis. Below, explore global
+                explainability analysis showing SHAP and LIME results across all data.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-gray-50 rounded-lg">

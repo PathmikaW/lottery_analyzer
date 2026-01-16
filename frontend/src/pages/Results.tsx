@@ -1,8 +1,14 @@
-import { BarChart3, Zap, Target, BookOpen, Brain, Database, Settings } from 'lucide-react'
+import { BarChart3, Zap, Target, BookOpen, Brain, Database, Settings, FileCode, ExternalLink } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
+import { Button } from '../components/ui/button'
 
 export default function Results() {
+  const viewLocalFile = (path: string) => {
+    // For local development, open VS Code or default editor
+    alert(`To view this file, please open: ${path}\n\nIn VS Code: Ctrl+P and type: ${path}`)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
@@ -27,7 +33,7 @@ export default function Results() {
               Assignment Requirements Coverage
             </CardTitle>
             <CardDescription>
-              MSc AI - Applied Machine Learning Assignment (Total: 90 + 10 Bonus Marks)
+              MSc AI - Applied Machine Learning Assignment Requirements
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -187,6 +193,52 @@ export default function Results() {
                   <li>✓ Hot/Cold number categorization</li>
                   <li>✓ Statistical features (mean, std, min, max gaps)</li>
                 </ul>
+              </div>
+            </div>
+
+            {/* View Source Code */}
+            <div className="mt-6 pt-6 border-t">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <FileCode className="h-4 w-4" />
+                View Source Code
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('src/preprocessing/feature_engineer.py')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  feature_engineer.py - 20 features engineered
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('src/preprocessing/data_cleaner.py')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  data_cleaner.py - Data validation & cleaning
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('src/preprocessing/data_splitter.py')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  data_splitter.py - Train/val/test split (70/15/15)
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('src/preprocessing/data_validator.py')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  data_validator.py - Schema validation
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -439,6 +491,43 @@ export default function Results() {
                 </div>
               </div>
             </div>
+
+            {/* View Notebooks */}
+            <div className="mt-6 pt-6 border-t">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <FileCode className="h-4 w-4" />
+                View Training Notebooks
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('notebooks/01_baseline_models_colab.ipynb')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  01_baseline_models.ipynb
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('notebooks/02_catboost_training_colab.ipynb')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  02_catboost_training.ipynb
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('notebooks/03_hyperparameter_tuning_colab.ipynb')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  03_hyperparameter_tuning.ipynb
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -609,6 +698,34 @@ export default function Results() {
                   <p className="text-gray-700 mt-1">Non-linear relationship with optimal range around 10-30 days.
                   Too recent or too old decreases probability.</p>
                 </div>
+              </div>
+            </div>
+
+            {/* View Explainability Notebooks */}
+            <div className="mt-6 pt-6 border-t">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <FileCode className="h-4 w-4" />
+                View Explainability Notebooks
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('notebooks/04_shap_analysis_colab.ipynb')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  04_shap_analysis.ipynb - Global SHAP + dependencies
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewLocalFile('notebooks/05_lime_analysis_colab.ipynb')}
+                  className="justify-start"
+                >
+                  <ExternalLink className="h-3 w-3 mr-2" />
+                  05_lime_analysis.ipynb - LIME + SHAP comparison
+                </Button>
               </div>
             </div>
           </CardContent>
