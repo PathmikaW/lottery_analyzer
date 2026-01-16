@@ -303,15 +303,30 @@ async def predict(request: PredictionRequest):
         proba = model.predict_proba(features)[0]
         prob_appear = proba[1]
 
-        # Determine prediction and confidence
+        # Determine prediction and confidence with directional granularity
         prediction = "Appear" if prob_appear > 0.5 else "Not Appear"
 
-        if prob_appear > 0.7 or prob_appear < 0.3:
-            confidence = "High"
-        elif prob_appear > 0.6 or prob_appear < 0.4:
-            confidence = "Medium"
-        else:
+        # Granular confidence levels based on visual scale
+        # 0-30%: High/Very High (Unlikely)
+        # 30-40%: Medium (Unlikely)
+        # 40-60%: Low (Unsure)
+        # 60-70%: Medium (Likely)
+        # 70-100%: High/Very High (Likely)
+
+        if prob_appear >= 0.75:
+            confidence = "Very High (Likely)"
+        elif prob_appear >= 0.70:
+            confidence = "High (Likely)"
+        elif prob_appear >= 0.60:
+            confidence = "Medium (Likely)"
+        elif prob_appear >= 0.40:
             confidence = "Low"
+        elif prob_appear >= 0.30:
+            confidence = "Medium (Unlikely)"
+        elif prob_appear >= 0.25:
+            confidence = "High (Unlikely)"
+        else:
+            confidence = "Very High (Unlikely)"
 
         predictions.append(NumberPrediction(
             number=number,  # Return original number

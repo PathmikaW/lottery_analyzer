@@ -90,12 +90,20 @@ export default function Predict() {
 
   const getConfidenceColor = (confidence: string) => {
     switch (confidence) {
-      case 'High':
+      case 'Very High (Likely)':
+        return 'text-green-700 bg-green-100 border-green-300 font-semibold'
+      case 'High (Likely)':
         return 'text-green-600 bg-green-50 border-green-200'
-      case 'Medium':
-        return 'text-yellow-600 bg-yellow-50 border-yellow-200'
+      case 'Medium (Likely)':
+        return 'text-blue-600 bg-blue-50 border-blue-200'
       case 'Low':
+        return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'Medium (Unlikely)':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'High (Unlikely)':
         return 'text-red-600 bg-red-50 border-red-200'
+      case 'Very High (Unlikely)':
+        return 'text-red-700 bg-red-100 border-red-300 font-semibold'
       default:
         return 'text-gray-600 bg-gray-50 border-gray-200'
     }
@@ -395,6 +403,103 @@ export default function Predict() {
                         ))}
                     </tbody>
                   </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Confidence Guide */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="text-lg">Understanding Confidence Levels</CardTitle>
+                <CardDescription>
+                  How to interpret the confidence ratings for predictions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="text-sm text-gray-700 mb-4">
+                    <strong>Confidence Scale:</strong> Based on predicted probability ranges
+                  </div>
+
+                  {/* Visual Scale */}
+                  <div className="bg-white p-4 rounded-lg border border-blue-300">
+                    <div className="flex items-center justify-between mb-2 text-xs font-mono text-gray-600">
+                      <span>0%</span>
+                      <span>30%</span>
+                      <span>40%</span>
+                      <span>50%</span>
+                      <span>60%</span>
+                      <span>70%</span>
+                      <span>100%</span>
+                    </div>
+                    <div className="grid grid-cols-10 gap-1 mb-3">
+                      <div className="col-span-3 h-8 bg-red-100 border-2 border-red-300 rounded flex items-center justify-center text-xs font-semibold text-red-700">
+                        Unlikely
+                      </div>
+                      <div className="col-span-1 h-8 bg-orange-100 border-2 border-orange-300 rounded flex items-center justify-center text-xs font-semibold text-orange-700">
+                        Medium
+                      </div>
+                      <div className="col-span-2 h-8 bg-gray-100 border-2 border-gray-300 rounded flex items-center justify-center text-xs font-semibold text-gray-700">
+                        Low
+                      </div>
+                      <div className="col-span-1 h-8 bg-blue-100 border-2 border-blue-300 rounded flex items-center justify-center text-xs font-semibold text-blue-700">
+                        Medium
+                      </div>
+                      <div className="col-span-3 h-8 bg-green-100 border-2 border-green-300 rounded flex items-center justify-center text-xs font-semibold text-green-700">
+                        Likely
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Legend */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-green-700 bg-green-100 border-green-300 font-semibold">
+                          Very High (Likely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">75-100%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-green-600 bg-green-50 border-green-200">
+                          High (Likely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">70-75%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-blue-600 bg-blue-50 border-blue-200">
+                          Medium (Likely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">60-70%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-gray-600 bg-gray-50 border-gray-200">
+                          Low
+                        </Badge>
+                        <span className="text-xs text-gray-600">40-60%</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-orange-600 bg-orange-50 border-orange-200">
+                          Medium (Unlikely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">30-40%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-red-600 bg-red-50 border-red-200">
+                          High (Unlikely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">25-30%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-red-700 bg-red-100 border-red-300 font-semibold">
+                          Very High (Unlikely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">0-25%</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

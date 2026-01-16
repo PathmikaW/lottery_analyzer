@@ -2,7 +2,14 @@ export interface NumberPrediction {
   number: number
   probability: number
   prediction: 'Appear' | 'Not Appear'
-  confidence: 'High' | 'Medium' | 'Low'
+  confidence:
+    | 'Very High (Likely)'
+    | 'High (Likely)'
+    | 'Medium (Likely)'
+    | 'Low'
+    | 'Medium (Unlikely)'
+    | 'High (Unlikely)'
+    | 'Very High (Unlikely)'
 }
 
 export interface PredictionResponse {
