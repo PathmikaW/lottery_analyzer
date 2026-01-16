@@ -272,19 +272,17 @@ async def predict(request: PredictionRequest):
 
     predictions = []
 
-    # Note: The model predicts individual digits (0-9), not lottery numbers (1-80)
-    # This is based on how the data was preprocessed - each digit position is analyzed separately
+    # Note: Different lotteries have different number ranges:
+    # - NLB lotteries: Single digits 0-9
+    # - DLB lotteries: Two-digit numbers 1-80
 
     for number in request.numbers:
-        # Convert to single digit (0-9) for model compatibility
-        # The model was trained on digit analysis, not full numbers
-        digit = number % 10  # Get last digit: 15 -> 5, 7 -> 7, 80 -> 0
-
-        # Get most recent features for this digit from test data
-        number_data = df_test[df_test['number'] == digit].tail(1)
+        # Get most recent features for this number from test data
+        number_data = df_test[df_test['number'] == number].tail(1)
 
         if len(number_data) == 0:
-            # Digit not found in test data - shouldn't happen for 0-9
+            # Number not found in test data - skip this number
+            # This can happen if user selects a number outside the lottery's range
             continue
 
         # Extract features in correct order
