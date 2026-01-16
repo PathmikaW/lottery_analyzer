@@ -121,17 +121,20 @@ export default function Explain() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between flex-wrap gap-4">
-                  <span>Number {explanation.number}</span>
-                  <div className="flex items-center gap-3">
+                  <span className="text-xl">Number {explanation.number}</span>
+                  <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm font-medium text-gray-600">Probability:</span>
+                      <span className="text-3xl font-bold text-purple-600">
+                        {(explanation.probability * 100).toFixed(2)}%
+                      </span>
+                    </div>
                     <Badge
-                      variant={explanation.prediction === 'Appear' ? 'default' : 'secondary'}
-                      className="text-lg px-4 py-2"
+                      variant={explanation.probability > 0.5 ? 'default' : 'secondary'}
+                      className="text-base px-4 py-2"
                     >
-                      {explanation.prediction}
+                      {explanation.probability > 0.5 ? 'Likely to Appear' : 'Unlikely to Appear'}
                     </Badge>
-                    <span className="text-2xl font-bold text-purple-600">
-                      {(explanation.probability * 100).toFixed(2)}%
-                    </span>
                   </div>
                 </CardTitle>
               </CardHeader>

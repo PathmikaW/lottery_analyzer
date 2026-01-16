@@ -15,10 +15,10 @@
 1. **Problem Definition & Dataset** (15 marks) - ✅ COMPLETED
 2. **New Algorithm Selection** (15 marks) - **CatBoost** - ✅ COMPLETED
 3. **Model Training & Evaluation** (20 marks) - ✅ COMPLETED (25.92% F1-Score)
-4. **Explainability & Interpretation** (20 marks) - 🔄 IN PROGRESS (SHAP + LIME)
-5. **Critical Discussion** (10 marks)
-6. **Report Quality** (10 marks)
-7. **BONUS: Front-End Integration** (10 marks) - React + FastAPI
+4. **Explainability & Interpretation** (20 marks) - ✅ COMPLETED (SHAP + LIME, 85% agreement)
+5. **Critical Discussion** (10 marks) - 🔄 PENDING
+6. **Report Quality** (10 marks) - 🔄 PENDING
+7. **BONUS: Front-End Integration** (10 marks) - 🔄 IN PROGRESS (React + FastAPI + TypeScript)
 
 ### Key Constraints
 
@@ -35,13 +35,13 @@
 ### National Lotteries Board (NLB) - 8 Lotteries
 
 - URL: https://www.nlb.lk
-- **Status**: ✅ Both draws and prizes scraped
+- **Status**: ✅ Draw numbers scraped (prize data excluded - not needed for number prediction)
 - Mahajana Sampatha, Govisetha, Dhana Nidhanaya, Handahana, Mega Power, Ada Sampatha, Suba-dawasak, NLB Jaya
 
 ### Development Lotteries Board (DLB) - 9 Lotteries
 
 - URL: https://www.dlb.lk
-- **Status**: ✅ Draws scraped, ❌ No prize data available
+- **Status**: ✅ Draw numbers scraped (prize data not available)
 - Ada Kotipathi, Shanida, Lagna Wasana, Supiri Dhana Sampatha, Super Ball, Kapruka, Jayoda, Sasiri, Jaya Sampatha
 
 ### Current Dataset
@@ -380,19 +380,27 @@ model = CatBoostClassifier(
 
 ## PHASE 5: Front-End Integration (10 BONUS MARKS)
 
-**Goal**: Create simple React + FastAPI web app for demo
+**Goal**: Create professional React + TypeScript + FastAPI web app showcasing assignment outputs
 
-### Session 5.1: FastAPI Backend
+**Status**: 🔄 IN PROGRESS (80% Complete)
+
+### Session 5.1: FastAPI Backend ✅ COMPLETED
 
 **Tasks**:
 
-- [ ] Install FastAPI: `pip install fastapi uvicorn`
-- [ ] Create `backend/main.py` with endpoints:
-  - `POST /predict` - Get predictions for lottery + date
-  - `GET /lotteries` - List available lotteries
-  - `POST /explain` - Get SHAP explanation for prediction
-- [ ] Load trained CatBoost model on startup
-- [ ] CORS middleware for React frontend
+- [X] Install FastAPI: `pip install fastapi uvicorn`
+- [X] Create `backend/main.py` with endpoints:
+  - `POST /predict` - Get predictions for lottery + numbers
+  - `GET /lotteries` - List available lotteries with metadata
+  - `GET /statistics` - Model performance stats
+  - `GET /explain/{number}` - Get SHAP explanation for number
+  - `GET /health` - Health check endpoint
+- [X] Load trained CatBoost model on startup
+- [X] Load SHAP explainer on startup
+- [X] CORS middleware for React frontend
+- [X] Pydantic models for type safety
+- [X] Error handling and validation
+- [X] Dynamic number range support (0-9, 1-80)
 
 **API Structure**:
 
@@ -418,46 +426,151 @@ def explain(lottery: str, number: int):
     pass
 ```
 
-**Deliverable**: `backend/main.py`
+**Deliverable**: ✅ `backend/main.py` (363 lines, fully functional)
 
-### Session 5.2: React Frontend
+### Session 5.2: React Frontend ✅ COMPLETED
 
 **Tasks**:
 
-- [ ] Create React app: `npm create vite@latest frontend -- --template react`
-- [ ] Simple UI with:
-  - Lottery selector dropdown
-  - Date picker
-  - "Predict" button
-  - Results table showing top 6 numbers with probabilities
-  - SHAP explanation panel (optional toggle)
-  - Disclaimer about randomness
-- [ ] Use `fetch` or `axios` to call FastAPI backend
-- [ ] Basic CSS styling (no TailwindCSS needed, keep simple)
+- [X] Create React app with Vite + TypeScript
+- [X] Professional UI with TailwindCSS + shadcn/ui components
+- [X] Pages implemented:
+  - [X] **Home** - Landing page with project overview
+  - [X] **Predict** - Interactive number prediction with dynamic grids
+  - [X] **Explain** - SHAP explainability for single numbers
+  - [X] **About** - Project details, statistics, tech stack
+- [X] Features:
+  - [X] Dynamic number grids (adapts to lottery: 0-9 or 1-80)
+  - [X] Quick Pick functionality
+  - [X] Top 5 number recommendations
+  - [X] Granular confidence levels (7 levels with directional labels)
+  - [X] Visual confidence guide
+  - [X] Fully responsive layout (mobile, tablet, desktop)
+  - [X] TypeScript type safety throughout
+- [X] Integration:
+  - [X] Axios for API calls
+  - [X] React Router for navigation
+  - [X] Lucide icons
+  - [X] Recharts for SHAP visualizations
 
-**UI Layout**:
+**Deliverable**: ✅ `frontend/` (Professional React + TypeScript app)
 
+### Session 5.3: GUI Enhancements - Showcase Assignment Outputs 🔄 IN PROGRESS
+
+**Current Issues**:
+
+1. ❌ "Appear" label in Explain page is misleading (should show "Likely/Unlikely to Appear")
+2. ❌ Only SHAP single-number explanation shown (missing global SHAP analysis)
+3. ❌ LIME analysis outputs not displayed (we have 9 PNG files in outputs/)
+4. ❌ Model training results not showcased (baseline comparison, hyperparameter tuning)
+5. ❌ Explainability visualizations (PNG plots) not accessible in GUI
+6. ❌ No organized "Results" page to showcase Phase 3 outputs
+7. ❌ Letter prediction not implemented (letters ignored during feature engineering)
+
+**Available Assignment Outputs to Display**:
+
+**Phase 3 - Model Training (`outputs/results/`):**
+- `catboost_training_history.png` - Training curves
+- `baseline_comparison.png` - Logistic Regression vs Random Forest vs CatBoost
+- `hyperparameter_heatmaps.png` - Parameter tuning visualization
+- `top_10_configs.png` - Best hyperparameter configurations
+- `catboost_feature_importance.csv` - Feature rankings
+
+**Phase 4 - Explainability (`outputs/explainability/`):**
+- **SHAP**: 12 PNG files (summary, bar, dependence, force, waterfall plots)
+- **LIME**: 9 PNG files (6 examples + comparison plots)
+- **Comparison**: SHAP vs LIME agreement (85%+)
+
+**Tasks to Complete**:
+
+#### Task 5.3.1: Fix "Appear" Label in Explain Page ⚡ HIGH PRIORITY
+
+**File**: `frontend/src/pages/Explain.tsx`
+
+- [ ] Change "Appear" badge to "Probability: X% | Prediction: Likely/Unlikely to Appear"
+- [ ] Make it clearer this is a probability, not certainty
+
+#### Task 5.3.2: Copy Assignment Outputs to Frontend ⚡ HIGH PRIORITY
+
+```bash
+# Create directories
+mkdir -p frontend/public/outputs/results
+mkdir -p frontend/public/outputs/explainability/shap
+mkdir -p frontend/public/outputs/explainability/lime
+
+# Copy images
+cp outputs/results/*.png frontend/public/outputs/results/
+cp outputs/explainability/shap/*.png frontend/public/outputs/explainability/shap/
+cp outputs/explainability/lime/*.png frontend/public/outputs/explainability/lime/
 ```
-┌─────────────────────────────────────┐
-│   Sri Lankan Lottery Predictor      │
-├─────────────────────────────────────┤
-│ Select Lottery: [Dropdown]          │
-│ Select Date: [Date Picker]          │
-│ [Predict Numbers]                   │
-├─────────────────────────────────────┤
-│ Top 6 Predicted Numbers:            │
-│  1. 23 (12.5%)                      │
-│  2. 45 (11.2%)                      │
-│  ...                                │
-├─────────────────────────────────────┤
-│ [Show SHAP Explanation] (optional)  │
-│ Disclaimer: Lottery is random...    │
-└─────────────────────────────────────┘
-```
 
-**Deliverable**: `frontend/` (React app)
+#### Task 5.3.3: Create "Results" Page - Model Performance 📊
 
-### Session 5.3: Demo Video
+**File**: `frontend/src/pages/Results.tsx`
+
+**Sections**:
+1. **Performance Summary**
+   - F1-Score: 25.92%, Precision: 14.95%, Recall: 100%
+   - 3.87x better than random
+
+2. **Baseline Comparison**
+   - Display `baseline_comparison.png`
+   - Table comparing Logistic Regression, Random Forest, CatBoost
+
+3. **Training History**
+   - Display `catboost_training_history.png`
+
+4. **Hyperparameter Tuning**
+   - Display `hyperparameter_heatmaps.png`
+   - Display `top_10_configs.png`
+
+5. **Feature Importance**
+   - Bar chart from `catboost_feature_importance.csv`
+
+#### Task 5.3.4: Enhance "Explain" Page with Tabs 🔍
+
+**File**: `frontend/src/pages/Explain.tsx`
+
+**Add Tabs**:
+
+1. **Tab 1: Single Number** (current functionality)
+   - SHAP values for specific number
+
+2. **Tab 2: Global SHAP Analysis** (NEW)
+   - Display `shap_summary_plot.png`
+   - Display `shap_bar_plot.png`
+   - Display `importance_comparison_plot.png`
+   - Explanation of global feature importance
+
+3. **Tab 3: LIME Analysis** (NEW)
+   - Display `lime_shap_comparison.png`
+   - Show positive examples: `lime_positive_1/2/3.png`
+   - Show negative examples: `lime_negative_1/2/3.png`
+   - Agreement score: 85%+
+
+4. **Tab 4: Feature Dependencies** (NEW)
+   - Display `shap_dependence_plots.png`
+   - Explain feature interactions
+
+#### Task 5.3.5: Update Navigation & Routing
+
+- [ ] Add "Results" menu item
+- [ ] Update `App.tsx` with `/results` route
+- [ ] Update `Layout.tsx` navigation
+
+#### Task 5.3.6: Backend Endpoints for CSV Data (OPTIONAL)
+
+- [ ] `/api/baseline-comparison` - Serve baseline_comparison.csv as JSON
+- [ ] `/api/hyperparameter-results` - Serve hyperparameter_tuning_results.csv as JSON
+- [ ] `/api/lime-shap-comparison` - Serve lime_shap_comparison.csv as JSON
+
+**Deliverables**:
+- ✅ Professional GUI showcasing ALL assignment outputs
+- ✅ Clear visualization of Phase 3 (model training) and Phase 4 (explainability)
+- ✅ Both SHAP and LIME analysis visible
+- ✅ Assignment evaluators can see all work directly in the app
+
+### Session 5.4: Demo Video 🔄 PENDING
 
 **Tasks**:
 
