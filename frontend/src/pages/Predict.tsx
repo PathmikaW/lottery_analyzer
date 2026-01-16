@@ -8,7 +8,7 @@ import type { LotteryInfo, PredictionResponse, NumberPrediction } from '../types
 
 export default function Predict() {
   const [lotteries, setLotteries] = useState<LotteryInfo[]>([])
-  const [selectedLottery, setSelectedLottery] = useState('MAHAJANA_SAMPATHA')
+  const [selectedLottery, setSelectedLottery] = useState('')
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([])
   const [predictions, setPredictions] = useState<PredictionResponse | null>(null)
   const [loading, setLoading] = useState(false)
@@ -19,6 +19,10 @@ export default function Predict() {
       try {
         const data = await apiService.getLotteries()
         setLotteries(data)
+        // Set first lottery as default
+        if (data.length > 0) {
+          setSelectedLottery(data[0].name)
+        }
       } catch (err) {
         console.error('Error fetching lotteries:', err)
       }
