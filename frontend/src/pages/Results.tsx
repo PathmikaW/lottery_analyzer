@@ -1,12 +1,57 @@
-import { useState } from 'react'
-import { BarChart3, Zap, Target, BookOpen, Brain, Database, Settings, FileCode, ExternalLink } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { BarChart3, Zap, Target, BookOpen, Brain, Database, Settings, FileCode, Eye } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import FileViewer from '../components/FileViewer'
 
+// Types for statistics
+interface DataQualityStats {
+  total_lotteries: number
+  total_draws: number
+  nlb_draws: number
+  dlb_draws: number
+  completeness_rate: number
+  date_range: { min: string; max: string; span_days: number }
+}
+
+interface SplitStats {
+  overall: {
+    total_records: number
+    total_positive: number
+    total_negative: number
+    overall_imbalance_ratio: number
+    overall_positive_ratio: number
+  }
+}
+
 export default function Results() {
   const [viewerOpen, setViewerOpen] = useState(false)
   const [currentFile, setCurrentFile] = useState({ path: '', name: '' })
+  const [dataQuality, setDataQuality] = useState<DataQualityStats | null>(null)
+  const [splitStats, setSplitStats] = useState<SplitStats | null>(null)
+
+  useEffect(() => {
+    // Load statistics from backend
+    const loadStats = async () => {
+      try {
+        const [qualityRes, splitRes] = await Promise.all([
+          fetch('http://localhost:8000/api/files/outputs/statistics/data_quality_stats.json'),
+          fetch('http://localhost:8000/api/files/outputs/statistics/split_stats.json')
+        ])
+        if (qualityRes.ok) {
+          const data = await qualityRes.json()
+          setDataQuality(data)
+        }
+        if (splitRes.ok) {
+          const data = await splitRes.json()
+          setSplitStats(data)
+        }
+      } catch (err) {
+        console.error('Failed to load statistics:', err)
+      }
+    }
+    loadStats()
+  }, [])
 
   const viewFile = (path: string, name: string) => {
     setCurrentFile({ path, name })
@@ -163,23 +208,31 @@ export default function Results() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span>Total Lotteries:</span>
-                    <strong>8 lottery types</strong>
+                    <strong>{dataQuality?.total_lotteries || 17} lottery types</strong>
                   </div>
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span>Total Draws Scraped:</span>
-                    <strong>~10,000+ draws</strong>
+                    <strong>{dataQuality?.total_draws?.toLocaleString() || '8,085'} draws</strong>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>Total ML Records:</span>
+                    <strong>{splitStats?.overall?.total_records?.toLocaleString() || '485,094'}</strong>
                   </div>
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span>Features Engineered:</span>
-                    <strong>20 features</strong>
-                  </div>
-                  <div className="flex justify-between p-2 bg-gray-50 rounded">
-                    <span>Target Variable:</span>
-                    <strong>appeared (0/1)</strong>
+                    <strong>21 features</strong>
                   </div>
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span>Class Imbalance:</span>
-                    <strong>~7% positive class</strong>
+                    <strong>{splitStats ? `${(splitStats.overall.overall_positive_ratio * 100).toFixed(1)}%` : '6.7%'} positive</strong>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>Date Range:</span>
+                    <strong>{dataQuality?.date_range ? `${dataQuality.date_range.min} to ${dataQuality.date_range.max}` : '2021-04-01 to 2026-01-12'}</strong>
+                  </div>
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span>Data Completeness:</span>
+                    <strong>{dataQuality ? `${dataQuality.completeness_rate.toFixed(1)}%` : '96.5%'}</strong>
                   </div>
                 </div>
                 <h4 className="font-semibold mt-4 mb-2">Preprocessing Steps</h4>
@@ -193,8 +246,51 @@ export default function Results() {
               </div>
             </div>
 
-            {/* View Source Code */}
+            {/* View Output Files */}
             <div className="mt-6 pt-6 border-t">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                View Output Files
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/statistics/data_quality_stats.json', 'data_quality_stats.json')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  data_quality_stats.json - Dataset statistics
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/statistics/split_stats.json', 'split_stats.json')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  split_stats.json - Train/val/test split statistics
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/reports/validation_report.txt', 'validation_report.txt')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  validation_report.txt - Data validation report
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/reports/CLASS_IMBALANCE_ANALYSIS.md', 'CLASS_IMBALANCE_ANALYSIS.md')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  CLASS_IMBALANCE_ANALYSIS.md - Imbalance handling
+                </Button>
+              </div>
+
               <h4 className="font-semibold mb-3 flex items-center gap-2">
                 <FileCode className="h-4 w-4" />
                 View Source Code
@@ -206,8 +302,8 @@ export default function Results() {
                   onClick={() => viewFile('src/preprocessing/feature_engineer.py', 'feature_engineer.py')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
-                  feature_engineer.py - 20 features engineered
+                  <FileCode className="h-3 w-3 mr-2" />
+                  feature_engineer.py - 21 features engineered
                 </Button>
                 <Button
                   variant="outline"
@@ -215,7 +311,7 @@ export default function Results() {
                   onClick={() => viewFile('src/preprocessing/data_cleaner.py', 'data_cleaner.py')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <FileCode className="h-3 w-3 mr-2" />
                   data_cleaner.py - Data validation & cleaning
                 </Button>
                 <Button
@@ -224,7 +320,7 @@ export default function Results() {
                   onClick={() => viewFile('src/preprocessing/data_splitter.py', 'data_splitter.py')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <FileCode className="h-3 w-3 mr-2" />
                   data_splitter.py - Train/val/test split (70/15/15)
                 </Button>
                 <Button
@@ -233,7 +329,7 @@ export default function Results() {
                   onClick={() => viewFile('src/preprocessing/data_validator.py', 'data_validator.py')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <FileCode className="h-3 w-3 mr-2" />
                   data_validator.py - Schema validation
                 </Button>
               </div>
@@ -295,6 +391,34 @@ export default function Results() {
                     <strong className="text-gray-900">vs XGBoost/LightGBM:</strong> Superior categorical feature handling and more robust to overfitting due to ordered target statistics
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* View Documentation */}
+            <div className="mt-6 pt-6 border-t">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                View Documentation
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('docs/ALGORITHM_JUSTIFICATION.md', 'ALGORITHM_JUSTIFICATION.md')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  ALGORITHM_JUSTIFICATION.md - Why CatBoost
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('docs/ALGORITHM_SELECTION_RATIONALE.md', 'ALGORITHM_SELECTION_RATIONALE.md')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  ALGORITHM_SELECTION_RATIONALE.md - Full rationale
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -489,8 +613,69 @@ export default function Results() {
               </div>
             </div>
 
-            {/* View Notebooks */}
+            {/* View Output Files */}
             <div className="mt-6 pt-6 border-t">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                View Results Files
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/results/baseline_results.json', 'baseline_results.json')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  baseline_results.json - Baseline model metrics
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/results/catboost_results.json', 'catboost_results.json')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  catboost_results.json - CatBoost metrics
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/results/best_model_config.json', 'best_model_config.json')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  best_model_config.json - Tuned hyperparameters
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/results/tuning_improvement.json', 'tuning_improvement.json')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  tuning_improvement.json - Improvement stats
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/results/model_comparison.csv', 'model_comparison.csv')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  model_comparison.csv - All model metrics
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/results/hyperparameter_tuning_results.csv', 'hyperparameter_tuning_results.csv')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  hyperparameter_tuning_results.csv - All configs
+                </Button>
+              </div>
+
               <h4 className="font-semibold mb-3 flex items-center gap-2">
                 <FileCode className="h-4 w-4" />
                 View Training Notebooks
@@ -502,7 +687,7 @@ export default function Results() {
                   onClick={() => viewFile('notebooks/01_baseline_models_colab.ipynb', '01_baseline_models.ipynb')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <FileCode className="h-3 w-3 mr-2" />
                   01_baseline_models.ipynb
                 </Button>
                 <Button
@@ -511,7 +696,7 @@ export default function Results() {
                   onClick={() => viewFile('notebooks/02_catboost_training_colab.ipynb', '02_catboost_training.ipynb')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <FileCode className="h-3 w-3 mr-2" />
                   02_catboost_training.ipynb
                 </Button>
                 <Button
@@ -520,7 +705,7 @@ export default function Results() {
                   onClick={() => viewFile('notebooks/03_hyperparameter_tuning_colab.ipynb', '03_hyperparameter_tuning.ipynb')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <FileCode className="h-3 w-3 mr-2" />
                   03_hyperparameter_tuning.ipynb
                 </Button>
               </div>
@@ -698,8 +883,60 @@ export default function Results() {
               </div>
             </div>
 
-            {/* View Explainability Notebooks */}
+            {/* View Output Files */}
             <div className="mt-6 pt-6 border-t">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Eye className="h-4 w-4" />
+                View Explainability Output Files
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/explainability/shap/shap_analysis_report.json', 'shap_analysis_report.json')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  shap_analysis_report.json - SHAP results summary
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/explainability/lime/lime_analysis_report.json', 'lime_analysis_report.json')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  lime_analysis_report.json - LIME results summary
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/explainability/shap/shap_feature_importance.csv', 'shap_feature_importance.csv')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  shap_feature_importance.csv - SHAP rankings
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('outputs/explainability/lime/lime_shap_comparison.csv', 'lime_shap_comparison.csv')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  lime_shap_comparison.csv - LIME vs SHAP
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => viewFile('docs/EXPLAINABILITY_ANALYSIS.md', 'EXPLAINABILITY_ANALYSIS.md')}
+                  className="justify-start"
+                >
+                  <Eye className="h-3 w-3 mr-2" />
+                  EXPLAINABILITY_ANALYSIS.md - Full documentation
+                </Button>
+              </div>
+
               <h4 className="font-semibold mb-3 flex items-center gap-2">
                 <FileCode className="h-4 w-4" />
                 View Explainability Notebooks
@@ -711,7 +948,7 @@ export default function Results() {
                   onClick={() => viewFile('notebooks/04_shap_analysis_colab.ipynb', '04_shap_analysis.ipynb')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <FileCode className="h-3 w-3 mr-2" />
                   04_shap_analysis.ipynb - Global SHAP + dependencies
                 </Button>
                 <Button
@@ -720,7 +957,7 @@ export default function Results() {
                   onClick={() => viewFile('notebooks/05_lime_analysis_colab.ipynb', '05_lime_analysis.ipynb')}
                   className="justify-start"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <FileCode className="h-3 w-3 mr-2" />
                   05_lime_analysis.ipynb - LIME + SHAP comparison
                 </Button>
               </div>

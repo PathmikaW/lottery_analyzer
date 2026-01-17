@@ -5,6 +5,7 @@ Educational project - MSc AI Applied Machine Learning Assignment
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 import pandas as pd
@@ -441,6 +442,65 @@ async def explain_prediction(number: int, lottery: str = "MAHAJANA_SAMPATHA"):
     )
 
 
+# File viewer endpoint
+@app.get("/api/files/{file_path:path}")
+async def get_file(file_path: str):
+    """
+    Serve source files and notebooks for viewing in the GUI
+
+    Security: Only allows access to specific directories:
+    - src/preprocessing/*.py
+    - notebooks/*.ipynb
+    - outputs/**/*
+    - docs/*.md
+    """
+    # Define project root (parent of backend folder)
+    project_root = Path(__file__).parent.parent
+
+    # Security: only allow certain directories
+    allowed_dirs = ['src/preprocessing', 'notebooks', 'outputs', 'docs']
+
+    # Check if file path starts with an allowed directory
+    if not any(file_path.startswith(d) for d in allowed_dirs):
+        raise HTTPException(
+            status_code=403,
+            detail=f"Access denied. Only files in {allowed_dirs} are accessible."
+        )
+
+    # Resolve full path
+    file_full_path = project_root / file_path
+
+    # Check if file exists
+    if not file_full_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"File not found: {file_path}"
+        )
+
+    # Check if path is a file (not directory)
+    if not file_full_path.is_file():
+        raise HTTPException(
+            status_code=400,
+            detail=f"Path is not a file: {file_path}"
+        )
+
+    # Read and return file contents
+    try:
+        with open(file_full_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return PlainTextResponse(content)
+    except UnicodeDecodeError:
+        raise HTTPException(
+            status_code=415,
+            detail="File is not a text file or uses unsupported encoding"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error reading file: {str(e)}"
+        )
+
+
 # Root endpoint
 @app.get("/")
 async def root():
@@ -456,6 +516,7 @@ async def root():
             "statistics": "/statistics",
             "predict": "/predict (POST)",
             "explain": "/explain/{number}",
+            "files": "/api/files/{file_path:path}",
             "docs": "/docs"
         }
     }
