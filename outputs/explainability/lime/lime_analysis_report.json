@@ -1,0 +1,26 @@
+{
+  "analysis_date": "2026-01-15 13:06:56",
+  "model_file": "best_model.cbm",
+  "instances_explained": 10,
+  "positive_examples": 5,
+  "negative_examples": 5,
+  "top_5_features_lime": [
+    "appearance_rate",
+    "days_since_last",
+    "0.05",
+    "0.06",
+    "current_gap"
+  ],
+  "outputs_generated": [
+    "lime_positive_1.png",
+    "lime_positive_2.png",
+    "lime_positive_3.png",
+    "lime_negative_1.png",
+    "lime_negative_2.png",
+    "lime_negative_3.png",
+    "lime_feature_importance.csv",
+    "lime_shap_comparison.csv",
+    "lime_shap_comparison.png",
+    "lime_analysis_report.json"
+  ]
+}

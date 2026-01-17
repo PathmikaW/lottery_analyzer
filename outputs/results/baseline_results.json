@@ -1,0 +1,16 @@
+{
+  "logistic_regression": {
+    "model": "Logistic Regression",
+    "f1_score": 0.18009478672985782,
+    "precision": 0.12315345191438046,
+    "recall": 0.33497334973349735,
+    "roc_auc": 0.6048335121379258
+  },
+  "random_forest": {
+    "model": "Random Forest",
+    "f1_score": 0.25946504716371627,
+    "precision": 0.3509262495630898,
+    "recall": 0.2058220582205822,
+    "roc_auc": 0.598109861894589
+  }
+}

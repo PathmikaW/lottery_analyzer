@@ -1,0 +1,158 @@
+======================================================================
+DATA VALIDATION REPORT
+======================================================================
+Generated: 2026-01-14 15:38:11
+
+
+dlb_ada_kotipathi:
+  Status: pass
+  Total rows: 772
+  Date range: 2023-11-16 to 2026-01-11
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 6, 'mean_gap_days': 1.020752269779507, 'large_gaps_count': 0, 'large_gaps': []}
+
+dlb_jaya_sampatha:
+  Status: pass
+  Total rows: 154
+  Date range: 2025-08-11 to 2026-01-11
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 1, 'mean_gap_days': 1.0, 'large_gaps_count': 0, 'large_gaps': []}
+
+dlb_jayoda:
+  Status: pass
+  Total rows: 74
+  Date range: 2025-02-03 to 2025-10-27
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 12, 'mean_gap_days': 3.643835616438356, 'large_gaps_count': 0, 'large_gaps': []}
+
+dlb_kapruka:
+  Status: pass
+  Total rows: 122
+  Date range: 2025-09-12 to 2026-01-11
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 1, 'mean_gap_days': 1.0, 'large_gaps_count': 0, 'large_gaps': []}
+
+dlb_lagna_wasana:
+  Status: pass
+  Total rows: 1627
+  Date range: 2021-04-01 to 2026-01-11
+  Missing values: {'critical_missing': 0, 'optional_missing': 1627, 'total_missing': 1627}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 43, 'mean_gap_days': 1.0738007380073802, 'large_gaps_count': 2, 'large_gaps': [{'draw_date': Timestamp('2021-06-28 00:00:00'), 'date_diff': 26.0}, {'draw_date': Timestamp('2021-10-08 00:00:00'), 'date_diff': 43.0}]}
+
+dlb_sasiri:
+  Status: fail
+  Total rows: 773
+  Date range: 2021-11-10 to 2026-01-11
+  Missing values: {'critical_missing': 0, 'optional_missing': 773, 'total_missing': 773}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': False, 'expected_range': (0, 40), 'invalid_count': 384, 'sample_errors': [(3, 44), (5, 46), (8, 42), (9, 50), (11, 47)]}
+  Date gaps: {'max_gap_days': 10, 'mean_gap_days': 1.9727979274611398, 'large_gaps_count': 0, 'large_gaps': []}
+
+dlb_shanida:
+  Status: pass
+  Total rows: 1627
+  Date range: 2021-04-01 to 2026-01-11
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 43, 'mean_gap_days': 1.0738007380073802, 'large_gaps_count': 2, 'large_gaps': [{'draw_date': Timestamp('2021-06-28 00:00:00'), 'date_diff': 26.0}, {'draw_date': Timestamp('2021-10-08 00:00:00'), 'date_diff': 43.0}]}
+
+dlb_super_ball:
+  Status: pass
+  Total rows: 946
+  Date range: 2023-05-26 to 2026-01-11
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 6, 'mean_gap_days': 1.016931216931217, 'large_gaps_count': 0, 'large_gaps': []}
+
+dlb_supiri_dhana_sampatha:
+  Status: pass
+  Total rows: 680
+  Date range: 2024-02-16 to 2026-01-11
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 6, 'mean_gap_days': 1.0235640648011781, 'large_gaps_count': 0, 'large_gaps': []}
+
+nlb_ada_sampatha:
+  Status: pass
+  Total rows: 207
+  Date range: 2025-06-12 to 2026-01-12
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 49), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 9, 'mean_gap_days': 1.0388349514563107, 'large_gaps_count': 0, 'large_gaps': []}
+
+nlb_dhana_nidhanaya:
+  Status: fail
+  Total rows: 81
+  Date range: 2025-06-12 to 2025-08-31
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': False, 'expected_range': (0, 80), 'invalid_count': 9, 'sample_errors': [(15, 81), (22, 82), (27, 81), (47, 81), (59, 82)]}
+  Date gaps: {'max_gap_days': 1, 'mean_gap_days': 1.0, 'large_gaps_count': 0, 'large_gaps': []}
+
+nlb_govisetha:
+  Status: fail
+  Total rows: 215
+  Date range: 2025-06-12 to 2026-01-12
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': False, 'expected_range': (0, 60), 'invalid_count': 150, 'sample_errors': [(0, 62), (1, 78), (2, 78), (4, 67), (5, 76)]}
+  Date gaps: {'max_gap_days': 1, 'mean_gap_days': 1.0, 'large_gaps_count': 0, 'large_gaps': []}
+
+nlb_handahana:
+  Status: fail
+  Total rows: 81
+  Date range: 2025-06-12 to 2025-08-31
+  Missing values: {'critical_missing': 0, 'optional_missing': 81, 'total_missing': 81}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': False, 'expected_range': (0, 40), 'invalid_count': 68, 'sample_errors': [(0, 45), (1, 52), (2, 41), (3, 46), (4, 47)]}
+  Date gaps: {'max_gap_days': 1, 'mean_gap_days': 1.0, 'large_gaps_count': 0, 'large_gaps': []}
+
+nlb_mahajana_sampatha:
+  Status: pass
+  Total rows: 215
+  Date range: 2025-06-12 to 2026-01-12
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 1, 'mean_gap_days': 1.0, 'large_gaps_count': 0, 'large_gaps': []}
+
+nlb_mega_power:
+  Status: fail
+  Total rows: 215
+  Date range: 2025-06-12 to 2026-01-12
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': False, 'expected_range': (0, 45), 'invalid_count': 203, 'sample_errors': [(0, 70), (2, 52), (3, 69), (4, 53), (5, 58)]}
+  Date gaps: {'max_gap_days': 1, 'mean_gap_days': 1.0, 'large_gaps_count': 0, 'large_gaps': []}
+
+nlb_nlb_jaya:
+  Status: pass
+  Total rows: 206
+  Date range: 2025-06-12 to 2026-01-12
+  Missing values: {'critical_missing': 0, 'optional_missing': 0, 'total_missing': 0}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 80), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 10, 'mean_gap_days': 1.0439024390243903, 'large_gaps_count': 0, 'large_gaps': []}
+
+nlb_suba_dawasak:
+  Status: pass
+  Total rows: 90
+  Date range: 2025-07-09 to 2026-01-12
+  Missing values: {'critical_missing': 0, 'optional_missing': 90, 'total_missing': 90}
+  Duplicates: {'count': 0, 'duplicate_ids': 0, 'duplicate_dates': 0}
+  Number ranges: {'valid': True, 'expected_range': (0, 70), 'invalid_count': 0, 'sample_errors': []}
+  Date gaps: {'max_gap_days': 99, 'mean_gap_days': 2.101123595505618, 'large_gaps_count': 1, 'large_gaps': [{'draw_date': Timestamp('2025-10-16 00:00:00'), 'date_diff': 99.0}]}

@@ -1,0 +1,522 @@
+import { useState, useEffect } from 'react'
+import { Sparkles, Shuffle, X, TrendingUp, AlertCircle } from 'lucide-react'
+import { Button } from '../components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
+import { Badge } from '../components/ui/badge'
+import apiService from '../services/api'
+import type { LotteryInfo, PredictionResponse, NumberPrediction } from '../types/api'
+
+export default function Predict() {
+  const [lotteries, setLotteries] = useState<LotteryInfo[]>([])
+  const [selectedLottery, setSelectedLottery] = useState('')
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([])
+  const [predictions, setPredictions] = useState<PredictionResponse | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchLotteries = async () => {
+      try {
+        const data = await apiService.getLotteries()
+        setLotteries(data)
+        // Set first lottery as default
+        if (data.length > 0) {
+          setSelectedLottery(data[0].name)
+        }
+      } catch (err) {
+        console.error('Error fetching lotteries:', err)
+      }
+    }
+
+    fetchLotteries()
+  }, [])
+
+  // Clear selections when lottery changes
+  useEffect(() => {
+    setSelectedNumbers([])
+    setPredictions(null)
+    setError(null)
+  }, [selectedLottery])
+
+  const toggleNumber = (number: number) => {
+    if (selectedNumbers.includes(number)) {
+      setSelectedNumbers(selectedNumbers.filter((n) => n !== number))
+    } else if (selectedNumbers.length < 20) {
+      setSelectedNumbers([...selectedNumbers, number].sort((a, b) => a - b))
+    }
+  }
+
+  const selectQuickPick = (count: number) => {
+    // Get number range for selected lottery
+    const lottery = lotteries.find(l => l.name === selectedLottery)
+    if (!lottery) return
+
+    const [min, max] = lottery.number_range.split('-').map(Number)
+
+    const numbers: number[] = []
+    while (numbers.length < count) {
+      const num = Math.floor(Math.random() * (max - min + 1)) + min
+      if (!numbers.includes(num)) {
+        numbers.push(num)
+      }
+    }
+    setSelectedNumbers(numbers.sort((a, b) => a - b))
+  }
+
+  const handlePredict = async () => {
+    if (selectedNumbers.length === 0) {
+      setError('Please select at least one number')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const result = await apiService.predict(selectedLottery, selectedNumbers)
+      setPredictions(result)
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to get predictions. Make sure the backend is running.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const clearSelection = () => {
+    setSelectedNumbers([])
+    setPredictions(null)
+    setError(null)
+  }
+
+  const getConfidenceColor = (confidence: string) => {
+    switch (confidence) {
+      case 'Very High (Likely)':
+        return 'text-green-700 bg-green-100 border-green-300 font-semibold'
+      case 'High (Likely)':
+        return 'text-green-600 bg-green-50 border-green-200'
+      case 'Medium (Likely)':
+        return 'text-blue-600 bg-blue-50 border-blue-200'
+      case 'Low':
+        return 'text-gray-600 bg-gray-50 border-gray-200'
+      case 'Medium (Unlikely)':
+        return 'text-orange-600 bg-orange-50 border-orange-200'
+      case 'High (Unlikely)':
+        return 'text-red-600 bg-red-50 border-red-200'
+      case 'Very High (Unlikely)':
+        return 'text-red-700 bg-red-100 border-red-300 font-semibold'
+      default:
+        return 'text-gray-600 bg-gray-50 border-gray-200'
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            Lottery Number Predictions
+          </h1>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Select numbers to predict their probability of appearing in the next draw
+          </p>
+        </div>
+
+        {/* Controls */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Selection Controls</CardTitle>
+            <CardDescription>Choose a lottery and select numbers to predict</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* Lottery Selector */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Select Lottery:</label>
+                <select
+                  value={selectedLottery}
+                  onChange={(e) => setSelectedLottery(e.target.value)}
+                  className="w-full md:w-auto px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {lotteries.length > 0 ? (
+                    lotteries.map((lottery) => (
+                      <option key={lottery.name} value={lottery.name}>
+                        {lottery.display_name} - {lottery.draw_format} ({lottery.draws_in_dataset} draws)
+                      </option>
+                    ))
+                  ) : (
+                    <option>Loading lotteries...</option>
+                  )}
+                </select>
+                {lotteries.length > 0 && selectedLottery && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    <strong>Draw Format:</strong> {lotteries.find(l => l.name === selectedLottery)?.draw_format}
+                  </p>
+                )}
+              </div>
+
+              {/* Quick Pick Buttons */}
+              <div>
+                <label className="block text-sm font-medium mb-2">Quick Actions:</label>
+                <div className="flex flex-wrap gap-2">
+                  {(() => {
+                    const lottery = lotteries.find(l => l.name === selectedLottery)
+                    if (!lottery) return null
+
+                    const [min, max] = lottery.number_range.split('-').map(Number)
+                    const totalNumbers = max - min + 1
+
+                    // Show appropriate Quick Pick options based on available numbers
+                    const quickPickOptions = []
+                    if (totalNumbers >= 5) quickPickOptions.push(5)
+                    if (totalNumbers >= 10) quickPickOptions.push(10)
+                    if (totalNumbers >= 20) quickPickOptions.push(20)
+
+                    return (
+                      <>
+                        {quickPickOptions.map(count => (
+                          <Button key={count} onClick={() => selectQuickPick(count)} size="sm" variant="outline">
+                            <Shuffle className="mr-2 h-4 w-4" />
+                            Quick Pick ({count})
+                          </Button>
+                        ))}
+                        <Button onClick={clearSelection} size="sm" variant="secondary">
+                          <X className="mr-2 h-4 w-4" />
+                          Clear All
+                        </Button>
+                      </>
+                    )
+                  })()}
+                </div>
+              </div>
+
+              {/* Selection Info */}
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <Badge variant={selectedNumbers.length > 0 ? 'default' : 'secondary'}>
+                  Selected: {selectedNumbers.length} / 20 numbers
+                </Badge>
+                {selectedNumbers.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {selectedNumbers.map((num) => (
+                      <span
+                        key={num}
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm font-medium"
+                      >
+                        {num}
+                        <button
+                          onClick={() => toggleNumber(num)}
+                          className="hover:text-blue-900"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Number Grid */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>
+              Select Numbers {lotteries.find(l => l.name === selectedLottery)?.number_range
+                ? `(${lotteries.find(l => l.name === selectedLottery)?.number_range})`
+                : '(Loading...)'}
+            </CardTitle>
+            <CardDescription>Click numbers to select/deselect (max 20)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {(() => {
+              const lottery = lotteries.find(l => l.name === selectedLottery)
+              if (!lottery || !lottery.number_range) {
+                return <div className="text-center py-8 text-gray-500">Loading lottery data...</div>
+              }
+
+              const [min, max] = lottery.number_range.split('-').map(Number)
+              const numbers = Array.from({ length: max - min + 1 }, (_, i) => i + min)
+
+              // Determine grid columns based on number range
+              const totalNumbers = max - min + 1
+              const gridCols = totalNumbers <= 10
+                ? 'grid-cols-5 sm:grid-cols-10'  // 10 numbers: 5-10 columns
+                : totalNumbers <= 50
+                ? 'grid-cols-8 sm:grid-cols-10'  // 50 numbers: 8-10 columns
+                : 'grid-cols-8 sm:grid-cols-10 md:grid-cols-16 lg:grid-cols-20'  // 80 numbers: 8-20 columns
+
+              return (
+                <div className={`grid ${gridCols} gap-1 sm:gap-2`}>
+                  {numbers.map((number) => {
+                    const isSelected = selectedNumbers.includes(number)
+                    return (
+                      <button
+                        key={number}
+                        onClick={() => toggleNumber(number)}
+                        disabled={!isSelected && selectedNumbers.length >= 20}
+                        className={`
+                          aspect-square flex items-center justify-center rounded-md text-sm font-semibold
+                          transition-all duration-200 hover:scale-110
+                          ${
+                            isSelected
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                          }
+                          ${!isSelected && selectedNumbers.length >= 20 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer'}
+                        `}
+                      >
+                        {number}
+                      </button>
+                    )
+                  })}
+                </div>
+              )
+            })()}
+          </CardContent>
+        </Card>
+
+        {/* Predict Button */}
+        <div className="text-center mb-6">
+          <Button
+            onClick={handlePredict}
+            disabled={selectedNumbers.length === 0 || loading}
+            size="lg"
+            className="px-8"
+          >
+            {loading ? (
+              <>
+                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Predicting...
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                Get Predictions
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <Card className="mb-6 border-red-200 bg-red-50">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-red-900">Error</p>
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Results */}
+        {predictions && (
+          <div className="space-y-6">
+            {/* Top 5 Numbers */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-green-600" />
+                  Top 5 Recommended Numbers
+                </CardTitle>
+                <CardDescription>
+                  Highest probability numbers from your selection
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                  {predictions.top_5_numbers.map((num, idx) => {
+                    const pred = predictions.predictions.find((p) => p.number === num)
+                    return pred ? (
+                      <div
+                        key={num}
+                        className="text-center p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200"
+                      >
+                        <div className="text-xs text-gray-600 mb-1">#{idx + 1}</div>
+                        <div className="text-3xl font-bold text-blue-600 mb-2">{num}</div>
+                        <div className="text-lg font-semibold text-gray-700 mb-1">
+                          {(pred.probability * 100).toFixed(2)}%
+                        </div>
+                        <Badge className={getConfidenceColor(pred.confidence)}>
+                          {pred.confidence}
+                        </Badge>
+                      </div>
+                    ) : null
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* All Predictions Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>All Predictions</CardTitle>
+                <CardDescription>
+                  Detailed probability breakdown for all selected numbers
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-3 px-4 font-semibold">Rank</th>
+                        <th className="text-left py-3 px-4 font-semibold">Number</th>
+                        <th className="text-left py-3 px-4 font-semibold">Probability</th>
+                        <th className="text-left py-3 px-4 font-semibold">Confidence</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...predictions.predictions]
+                        .sort((a, b) => b.probability - a.probability)
+                        .map((pred, idx) => (
+                          <tr key={pred.number} className="border-b hover:bg-gray-50">
+                            <td className="py-3 px-4 text-gray-600">{idx + 1}</td>
+                            <td className="py-3 px-4">
+                              <span className="inline-flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-md font-bold">
+                                {pred.number}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center gap-2">
+                                <div className="flex-grow bg-gray-200 rounded-full h-2 w-24">
+                                  <div
+                                    className="bg-blue-600 h-2 rounded-full"
+                                    style={{ width: `${pred.probability * 100}%` }}
+                                  />
+                                </div>
+                                <span className="font-semibold text-sm">
+                                  {(pred.probability * 100).toFixed(2)}%
+                                </span>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4">
+                              <Badge className={getConfidenceColor(pred.confidence)}>
+                                {pred.confidence}
+                              </Badge>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Confidence Guide */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="text-lg">Understanding Confidence Levels</CardTitle>
+                <CardDescription>
+                  How to interpret the confidence ratings for predictions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="text-sm text-gray-700 mb-4">
+                    <strong>Confidence Scale:</strong> Based on predicted probability ranges
+                  </div>
+
+                  {/* Visual Scale */}
+                  <div className="bg-white p-4 rounded-lg border border-blue-300">
+                    <div className="flex items-center justify-between mb-2 text-xs font-mono text-gray-600">
+                      <span>0%</span>
+                      <span>30%</span>
+                      <span>40%</span>
+                      <span>50%</span>
+                      <span>60%</span>
+                      <span>70%</span>
+                      <span>100%</span>
+                    </div>
+                    <div className="grid grid-cols-10 gap-1 mb-3">
+                      <div className="col-span-3 h-8 bg-red-100 border-2 border-red-300 rounded flex items-center justify-center text-xs font-semibold text-red-700">
+                        Unlikely
+                      </div>
+                      <div className="col-span-1 h-8 bg-orange-100 border-2 border-orange-300 rounded flex items-center justify-center text-xs font-semibold text-orange-700">
+                        Medium
+                      </div>
+                      <div className="col-span-2 h-8 bg-gray-100 border-2 border-gray-300 rounded flex items-center justify-center text-xs font-semibold text-gray-700">
+                        Low
+                      </div>
+                      <div className="col-span-1 h-8 bg-blue-100 border-2 border-blue-300 rounded flex items-center justify-center text-xs font-semibold text-blue-700">
+                        Medium
+                      </div>
+                      <div className="col-span-3 h-8 bg-green-100 border-2 border-green-300 rounded flex items-center justify-center text-xs font-semibold text-green-700">
+                        Likely
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Legend */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-green-700 bg-green-100 border-green-300 font-semibold">
+                          Very High (Likely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">75-100%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-green-600 bg-green-50 border-green-200">
+                          High (Likely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">70-75%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-blue-600 bg-blue-50 border-blue-200">
+                          Medium (Likely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">60-70%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-gray-600 bg-gray-50 border-gray-200">
+                          Low
+                        </Badge>
+                        <span className="text-xs text-gray-600">40-60%</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-orange-600 bg-orange-50 border-orange-200">
+                          Medium (Unlikely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">30-40%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-red-600 bg-red-50 border-red-200">
+                          High (Unlikely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">25-30%</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Badge className="text-red-700 bg-red-100 border-red-300 font-semibold">
+                          Very High (Unlikely)
+                        </Badge>
+                        <span className="text-xs text-gray-600">0-25%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Note */}
+            <Card className="bg-yellow-50 border-yellow-200">
+              <CardContent className="pt-6">
+                <p className="text-sm text-gray-700">
+                  <strong>Note:</strong> Predictions are based on historical patterns and statistical
+                  analysis using CatBoost ML. Lottery outcomes are inherently random. Use for
+                  educational purposes only.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

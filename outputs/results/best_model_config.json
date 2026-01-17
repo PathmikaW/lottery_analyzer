@@ -1,0 +1,11 @@
+{
+  "model": "CatBoost (Best)",
+  "iterations": 500,
+  "learning_rate": 0.01,
+  "depth": 6,
+  "best_iteration": 13,
+  "f1_score": 0.25918140225052555,
+  "precision": 0.3265814895606108,
+  "recall": 0.21484214842148422,
+  "roc_auc": 0.6091824199261848
+}
