@@ -94,7 +94,7 @@ export default function Results() {
                 <p className="text-sm text-gray-600">
                   ✓ Lottery number prediction problem defined<br />
                   ✓ Web scraped dataset from NLB & DLB<br />
-                  ✓ 20 engineered features + preprocessing<br />
+                  ✓ 21 engineered features + preprocessing<br />
                   ✓ Dataset statistics and ethical considerations
                 </p>
               </div>
@@ -116,7 +116,7 @@ export default function Results() {
                   </div>
                 <p className="text-sm text-gray-600">
                   ✓ 70/15/15 train/validation/test split<br />
-                  ✓ Grid search hyperparameter tuning (100+ configs)<br />
+                  ✓ Grid search hyperparameter tuning (81 configs)<br />
                   ✓ Metrics: F1-score, Precision, Recall, ROC-AUC<br />
                   ✓ Baseline comparison and performance analysis
                 </p>
@@ -199,7 +199,7 @@ export default function Results() {
                 <ul className="text-sm text-gray-700 space-y-1 mb-4">
                   <li>• <strong>Source:</strong> National Lotteries Board (NLB) and Development Lotteries Board (DLB)</li>
                   <li>• <strong>Collection:</strong> Web scraping using Python (BeautifulSoup + Requests)</li>
-                  <li>• <strong>Timeframe:</strong> Historical draws from 2010-2025</li>
+                  <li>• <strong>Timeframe:</strong> Historical draws from 2021-04-01 to 2026-01-12</li>
                   <li>• <strong>Ethical Use:</strong> Publicly available data, no personal information</li>
                 </ul>
               </div>
@@ -987,7 +987,7 @@ export default function Results() {
                   Users must understand this is probabilistic, not deterministic.</li>
                   <li>• <strong>Class Imbalance:</strong> Severe imbalance (~7% positive class) makes learning difficult.
                   Model may over-predict negatives.</li>
-                  <li>• <strong>Feature Engineering Ceiling:</strong> Only 20 features engineered. More sophisticated
+                  <li>• <strong>Feature Engineering Ceiling:</strong> Only 21 features engineered. More sophisticated
                   temporal patterns (e.g., LSTM) not explored.</li>
                 </ul>
               </div>
@@ -997,7 +997,7 @@ export default function Results() {
                 <ul className="space-y-2">
                   <li>• <strong>Web Scraping Reliability:</strong> Data quality depends on source website accuracy.
                   Potential missing or incorrect draws.</li>
-                  <li>• <strong>Temporal Coverage:</strong> Historical data from 2010-2025 may not capture all
+                  <li>• <strong>Temporal Coverage:</strong> Historical data from 2021-04-01 to 2026-01-12 (~58 months) may not capture all
                   lottery rule changes or administrative modifications.</li>
                   <li>• <strong>No External Factors:</strong> Model doesn't account for external factors (e.g.,
                   machine changes, ball replacements) that might affect randomness.</li>
@@ -1059,9 +1059,9 @@ export default function Results() {
                 <h4 className="font-semibold mb-2 text-purple-900">Technical Skills</h4>
                 <ul className="space-y-1">
                   <li>✓ Web scraping and data collection</li>
-                  <li>✓ Feature engineering (20 features from raw data)</li>
+                  <li>✓ Feature engineering (21 features from raw data)</li>
                   <li>✓ Novel algorithm application (CatBoost)</li>
-                  <li>✓ Hyperparameter tuning (grid search, 100+ configs)</li>
+                  <li>✓ Hyperparameter tuning (grid search, 81 configs)</li>
                   <li>✓ Model evaluation (4 metrics, baseline comparison)</li>
                   <li>✓ Explainability (SHAP + LIME analysis)</li>
                   <li>✓ Full-stack development (React + FastAPI)</li>
