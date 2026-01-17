@@ -75,19 +75,6 @@ lottery_analyzer/
 
 ---
 
-## Assignment Requirements
-
-| Section | Marks | Status | Evidence |
-|---------|-------|--------|----------|
-| 1. Problem Definition & Dataset | 15 | COMPLETED | 17 lotteries, 8,085 draws, 485K records, 21 features |
-| 2. Algorithm Selection | 15 | COMPLETED | CatBoost (not taught in lectures) |
-| 3. Model Training & Evaluation | 20 | COMPLETED | 25.92% F1-Score, baseline comparison, hyperparameter tuning |
-| 4. Explainability & Interpretation | 20 | COMPLETED | SHAP + LIME analysis, feature importance |
-| 5. Critical Discussion | 10 | COMPLETED | Limitations, ethics, bias discussed |
-| 6. Report Quality | 10 | COMPLETED | Professional documentation |
-| 7. BONUS: Front-End Integration | 10 | COMPLETED | React + FastAPI web application |
-
-**Total: 90 + 10 Bonus = 100 marks**
 
 ---
 
@@ -208,6 +195,6 @@ npm install
 
 ---
 
-**Author**: MSc AI Student
+**Author**: Pathmika.W
 **Date**: January 2026
 **Course**: Applied Machine Learning Assignment
