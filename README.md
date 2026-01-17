@@ -118,13 +118,15 @@ lottery_analyzer/
 ## Explainability Results
 
 ### Top 5 Features (SHAP)
-| Rank | Feature | Mean |SHAP| |
-|------|---------|---------------|
-| 1 | appearance_rate | 0.0114 |
-| 2 | days_since_last | 0.0074 |
-| 3 | draw_sequence | 0.0043 |
-| 4 | frequency_last_10 | 0.0030 |
-| 5 | draw_id | 0.0027 |
+
+| Rank | Feature              | Mean SHAP |
+|------|----------------------|-----------|
+| 1    | appearance_rate      | 0.0114    |
+| 2    | days_since_last      | 0.0074    |
+| 3    | draw_sequence        | 0.0043    |
+| 4    | frequency_last_10    | 0.0030    |
+| 5    | draw_id              | 0.0027    |
+
 
 ### SHAP vs LIME Agreement
 - Top 2 features: Perfect agreement
