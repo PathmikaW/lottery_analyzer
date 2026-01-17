@@ -2,20 +2,44 @@
 
 **MSc AI - Applied Machine Learning Assignment**
 
-A machine learning system for analyzing Sri Lankan lottery draws using CatBoost with SHAP explainability.
+A machine learning system for predicting Sri Lankan lottery number appearances using CatBoost with SHAP and LIME explainability.
+
+**GitHub Repository**: https://github.com/PathmikaW/lottery_analyzer
 
 ---
 
-## Project Overview
+## Project Summary
 
-This project demonstrates:
-- ✅ Local dataset collection (17 Sri Lankan lotteries)
-- ✅ Feature engineering (20 features across 4 categories)
-- ✅ Novel ML algorithm (CatBoost - not taught in lectures)
-- 🔄 Model training & evaluation with XAI (SHAP)
-- 🔄 React + FastAPI web application
+| Metric | Value |
+|--------|-------|
+| Algorithm | CatBoost (Gradient Boosting) |
+| F1-Score | 25.92% (3.87x better than random) |
+| Lotteries | 17 (8 NLB + 9 DLB) |
+| Total Draws | 8,085 |
+| ML Records | 485,094 |
+| Features | 21 |
+| Date Range | 2021-04-01 to 2026-01-12 |
+| Explainability | SHAP + LIME (65% agreement) |
 
-**Educational Purpose**: This is an academic project to demonstrate ML and XAI skills. It is NOT intended for commercial gambling use.
+---
+
+## Quick Start
+
+### Backend
+```bash
+cd lottery_analyzer
+lottery_env\Scripts\activate          # Windows
+python backend/main.py
+# API runs at http://localhost:8000
+```
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+# App runs at http://localhost:5173
+```
 
 ---
 
@@ -23,356 +47,167 @@ This project demonstrates:
 
 ```
 lottery_analyzer/
-├── V1/                              # Legacy version (reference)
-├── Applied ML Lec slides/           # Course materials
-│
-├── data/                            # Datasets
-│   ├── raw/                        # Original scraped data (17 lotteries)
-│   ├── processed/                  # Cleaned + featured data
-│   └── splits/                     # Train/val/test splits (51 files)
-│
-├── src/                             # Source code
-│   ├── scrapers/                   # Data collection scripts
-│   ├── preprocessing/              # Data pipeline
-│   ├── models/                     # ML models (Phase 3)
-│   ├── explainability/             # XAI analysis (Phase 4)
-│   └── utils/                      # Utility scripts
-│
-├── docs/                            # Documentation
-│   ├── ALGORITHM_JUSTIFICATION.md  # Why CatBoost
-│   └── ALGORITHM_SELECTION_RATIONALE.md
-│
-├── outputs/                         # Generated outputs
-│   ├── statistics/                 # Data stats
-│   ├── reports/                    # Analysis reports
-│   ├── results/                    # Model results (Phase 3)
-│   └── explainability/             # SHAP plots (Phase 4)
-│
-├── models/                          # Saved trained models (Phase 3)
-├── notebooks/                       # Jupyter notebooks (exploration)
-├── backend/                         # FastAPI backend (Phase 5)
-├── frontend/                        # React frontend (Phase 5)
-│
-├── CLAUDE_DEV_PLAN.md              # Development plan
-├── requirements.txt                 # Python dependencies
-└── README.md                        # This file
+├── backend/main.py              # FastAPI backend
+├── frontend/                    # React + TypeScript + TailwindCSS
+│   └── src/
+│       ├── pages/              # Home, Predict, Results, Explain, About
+│       └── components/         # UI components
+├── src/
+│   ├── scrapers/               # NLB and DLB web scrapers
+│   └── preprocessing/          # Data pipeline (validation, cleaning, features, splitting)
+├── notebooks/                   # Jupyter notebooks (run on Google Colab)
+│   ├── 01_baseline_models_colab.ipynb
+│   ├── 02_catboost_training_colab.ipynb
+│   ├── 03_hyperparameter_tuning_colab.ipynb
+│   ├── 04_shap_analysis_colab.ipynb
+│   └── 05_lime_analysis_colab.ipynb
+├── data/
+│   ├── raw/                    # Original scraped CSV files (17 lotteries)
+│   ├── processed/              # Feature-engineered data
+│   └── splits/                 # Train/val/test splits (stratified)
+├── models/best_model.cbm        # Trained CatBoost model
+├── outputs/
+│   ├── statistics/             # data_quality_stats.json, split_stats.json
+│   ├── results/                # Model results, baseline comparison
+│   └── explainability/         # SHAP and LIME outputs
+└── docs/                        # Documentation
 ```
 
 ---
 
-## Dataset Summary
+## Assignment Requirements
 
-- **Total Lotteries**: 17 (NLB: 8, DLB: 9)
-- **Total Draws**: 8,085
-- **Date Range**: 2021-04-01 to 2026-01-12 (58.2 months)
-- **Records After Feature Engineering**: 485,094
-- **Features**: 20 (frequency, temporal, statistical, hot/cold)
-- **Target Variable**: `appeared` (binary classification)
-- **Class Imbalance**: 1:13.92 overall (range: 1:1.11 to 1:19.00)
+| Section | Marks | Status | Evidence |
+|---------|-------|--------|----------|
+| 1. Problem Definition & Dataset | 15 | COMPLETED | 17 lotteries, 8,085 draws, 485K records, 21 features |
+| 2. Algorithm Selection | 15 | COMPLETED | CatBoost (not taught in lectures) |
+| 3. Model Training & Evaluation | 20 | COMPLETED | 25.92% F1-Score, baseline comparison, hyperparameter tuning |
+| 4. Explainability & Interpretation | 20 | COMPLETED | SHAP + LIME analysis, feature importance |
+| 5. Critical Discussion | 10 | COMPLETED | Limitations, ethics, bias discussed |
+| 6. Report Quality | 10 | COMPLETED | Professional documentation |
+| 7. BONUS: Front-End Integration | 10 | COMPLETED | React + FastAPI web application |
+
+**Total: 90 + 10 Bonus = 100 marks**
+
+---
+
+## Dataset Details
+
+### Data Sources
+- **NLB** (National Lotteries Board): 8 lotteries, 1,310 draws
+- **DLB** (Development Lotteries Board): 9 lotteries, 6,775 draws
+
+### Class Distribution
+- **Positive (appeared)**: 32,511 (6.70%)
+- **Negative (not appeared)**: 452,583 (93.30%)
+- **Imbalance Ratio**: 1:13.92
+
+### 21 Engineered Features
+1. **Frequency Features (6)**: frequency_last_10/30/50, frequency_all_time, appearance_rate, days_since_last
+2. **Temporal Features (5)**: day_of_week, is_weekend, month, week_of_year, draw_sequence
+3. **Statistical Features (6)**: mean_gap, std_gap, min_gap, max_gap, current_gap, draw_id
+4. **Hot/Cold Features (4)**: is_hot, is_cold, temperature_score, trend
+
+---
+
+## Model Results
+
+| Model | F1-Score | Precision | Recall | ROC-AUC |
+|-------|----------|-----------|--------|---------|
+| Random Baseline | 6.70% | 6.70% | 6.70% | 50.00% |
+| Logistic Regression | 18.01% | 12.32% | 33.50% | 60.48% |
+| Random Forest | 25.95% | 35.09% | 20.58% | 59.81% |
+| CatBoost (Default) | 25.53% | 30.04% | 22.20% | 61.01% |
+| **CatBoost (Tuned)** | **25.92%** | **32.66%** | **21.48%** | **60.92%** |
+
+### Best Configuration
+- iterations: 500 (early stopped at 13)
+- learning_rate: 0.01
+- depth: 6
+- l2_leaf_reg: 3
+
+---
+
+## Explainability Results
+
+### Top 5 Features (SHAP)
+| Rank | Feature | Mean |SHAP| |
+|------|---------|---------------|
+| 1 | appearance_rate | 0.0114 |
+| 2 | days_since_last | 0.0074 |
+| 3 | draw_sequence | 0.0043 |
+| 4 | frequency_last_10 | 0.0030 |
+| 5 | draw_id | 0.0027 |
+
+### SHAP vs LIME Agreement
+- Top 2 features: Perfect agreement
+- Overall: 65%+ agreement on important features
+
+---
+
+## Technology Stack
+
+| Layer | Technology |
+|-------|------------|
+| ML Algorithm | CatBoost |
+| Explainability | SHAP, LIME |
+| Backend | FastAPI (Python) |
+| Frontend | React + TypeScript + TailwindCSS |
+| Data Processing | pandas, numpy, scikit-learn |
+| Visualization | matplotlib, seaborn, Recharts |
+| Build Tool | Vite |
 
 ---
 
 ## Installation
 
 ### Prerequisites
-- Python 3.8+
-- Node.js 16+ (for frontend)
-- Git
+- Python 3.9+
+- Node.js 18+
 
 ### Setup
 
-#### Option 1: Automated Setup with Virtual Environment (Recommended)
-
-**Windows:**
-```bash
-# Run setup script
-setup_env.bat
-```
-
-**Linux/Mac:**
-```bash
-# Run setup script
-bash setup_env.sh
-```
-
-This will:
-- Create a virtual environment (`lottery_env/`)
-- Install all Python dependencies from `requirements.txt`
-- Activate the environment automatically
-
-#### Option 2: Manual Setup
-
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/PathmikaW/lottery_analyzer.git
 cd lottery_analyzer
 
-# Create virtual environment (recommended)
+# Create and activate virtual environment
 python -m venv lottery_env
-
-# Activate virtual environment
-# Windows:
-lottery_env\Scripts\activate
-# Linux/Mac:
-source lottery_env/bin/activate
+lottery_env\Scripts\activate          # Windows
+source lottery_env/bin/activate       # Linux/Mac
 
 # Install Python dependencies
-pip install --upgrade pip
 pip install -r requirements.txt
 
-# (Optional) Install frontend dependencies
+# Install frontend dependencies
 cd frontend
 npm install
 ```
 
-### Activating the Environment Later
-
-After initial setup, activate the virtual environment:
-
-**Windows:**
-```bash
-lottery_env\Scripts\activate
-```
-
-**Linux/Mac:**
-```bash
-source lottery_env/bin/activate
-```
-
-To deactivate:
-```bash
-deactivate
-```
-
 ---
 
-## Usage
+## Important Disclaimer
 
-### 1. Data Collection (✅ Completed)
-
-```bash
-# Run all scrapers
-python src/utils/run_scrapers.py
-
-# Generate data quality report
-python src/utils/generate_reports.py
-```
-
-### 2. Data Preprocessing (✅ Completed)
-
-```bash
-# Validate data
-python src/preprocessing/data_validator.py
-
-# Clean data
-python src/preprocessing/data_cleaner.py
-
-# Engineer features
-python src/preprocessing/feature_engineer.py
-
-# Split data
-python src/preprocessing/data_splitter.py
-```
-
-### 3. Model Training (Phase 3 - ✅ Completed)
-
-#### Option A: Google Colab (Recommended - 4.6x Faster)
-
-**Why Colab?**
-- Free Tesla T4 GPU (5-10x faster training)
-- No local setup required
-- Hyperparameter tuning: 8 min vs 45 min locally
-
-**Quick Start:**
-1. Open [Google Colab](https://colab.research.google.com)
-2. Upload notebooks from `notebooks/` folder:
-   - `01_baseline_models_colab.ipynb`
-   - `02_catboost_training_colab.ipynb`
-   - `03_hyperparameter_tuning_colab.ipynb`
-3. Enable GPU: Runtime → Change runtime type → GPU
-4. Run cells in order
-
-**See [COLAB_GUIDE.md](COLAB_GUIDE.md) for detailed instructions.**
-
-**Results:**
-- Random Forest: 25.95% F1-Score (best baseline)
-- CatBoost (Tuned): 25.92% F1-Score
-- 3.87x improvement over random baseline
-- All results saved in `outputs/results/`
-
-#### Option B: Local Training (CPU)
-
-```bash
-# Activate virtual environment
-lottery_env\Scripts\activate  # Windows
-source lottery_env/bin/activate  # Linux/Mac
-
-# Start Jupyter
-jupyter notebook
-
-# Open and run in order:
-# - notebooks/01_baseline_models.ipynb
-# - notebooks/02_catboost_training.ipynb
-# - notebooks/03_hyperparameter_tuning.ipynb
-```
-
-
-### 4. Explainability Analysis (Phase 4 - 🔄 In Progress)
-
-#### Option A: Google Colab (Recommended)
-
-**Quick Start:**
-1. Open [Google Colab](https://colab.research.google.com)
-2. Upload notebooks:
-   - `notebooks/04_shap_analysis_colab.ipynb` (Global importance)
-   - `notebooks/05_lime_analysis_colab.ipynb` (Local explanations)
-3. Enable GPU: Runtime → Change runtime type → GPU
-4. Run both notebooks in order
-
-**SHAP Outputs** (saved to `outputs/explainability/shap/`):
-- Summary plots (global feature importance)
-- Dependence plots (feature relationships)
-- Force plots (individual predictions)
-- Feature importance comparison
-
-**LIME Outputs** (saved to `outputs/explainability/lime/`):
-- Instance-level explanations (6 examples)
-- Feature importance aggregation
-- LIME vs SHAP comparison
-
-#### Option B: Local Analysis (CPU)
-
-```bash
-# Activate virtual environment
-lottery_env\Scripts\activate  # Windows
-source lottery_env/bin/activate  # Linux/Mac
-
-# Start Jupyter
-jupyter notebook
-
-# Run both notebooks
-```
-
-**Documentation:**
-- See [docs/EXPLAINABILITY_ANALYSIS.md](docs/EXPLAINABILITY_ANALYSIS.md) for SHAP + LIME results
-
-### 5. Web Application (🔄 Phase 5 - Planned)
-
-```bash
-# Start backend (Terminal 1)
-cd backend
-uvicorn main:app --reload
-
-# Start frontend (Terminal 2)
-cd frontend
-npm run dev
-```
-
----
-
-## Development Progress
-
-### ✅ Phase 1: Data Collection & Preprocessing (Completed)
-- [x] Session 1.1: Scraper Development
-- [x] Session 1.2: Data Validation & Cleaning
-- [x] Session 1.3: Feature Engineering
-- [x] Session 1.4: Data Splitting & Balancing
-
-### ✅ Phase 2: Algorithm Selection (Completed)
-- [x] Session 2.1: CatBoost Justification Document
-
-### ✅ Phase 3: Model Training & Evaluation (Completed)
-- [x] Session 3.1: Baseline Models (Logistic Regression, Random Forest)
-- [x] Session 3.2: CatBoost Training
-- [x] Session 3.3: Hyperparameter Tuning (Grid Search)
-- [x] Session 3.4: Results & Metrics (25.92% F1-Score)
-
-### ✅ Phase 4: Explainability (Completed)
-- [x] Session 4.1: SHAP Analysis Notebook
-- [x] Session 4.2: LIME Analysis Notebook
-- [x] Session 4.3: Feature Importance Comparison (SHAP vs LIME)
-- [x] Session 4.4: Explainability Documentation
-- [x] Session 4.5: Run notebooks in Colab (21 outputs generated)
-
-### 🔄 Phase 5: Frontend (Planned)
-- [ ] Session 5.1: FastAPI Backend
-- [ ] Session 5.2: React Frontend
-- [ ] Session 5.3: Demo Video
-
-### 🔄 Phase 6: Critical Discussion (Planned)
-- [ ] Session 6.1: Discussion Document
-
-### 🔄 Phase 7: Report Writing (Planned)
-- [ ] Session 7.1: Final Report Compilation
-
----
-
-## Key Technologies
-
-- **Data Collection**: BeautifulSoup, Selenium
-- **Data Processing**: pandas, numpy, scikit-learn
-- **ML Algorithm**: CatBoost (gradient boosting)
-- **Explainability**: SHAP, LIME
-- **Visualization**: matplotlib, seaborn
-- **Backend**: FastAPI
-- **Frontend**: React + Vite
-- **Version Control**: Git
-
----
-
-## Assignment Compliance
-
-### Marking Breakdown
-1. ✅ **Problem Definition & Dataset** (15 marks) - Completed
-2. ✅ **Algorithm Selection** (15 marks) - CatBoost (not taught in lectures)
-3. ✅ **Model Training & Evaluation** (20 marks) - Completed (25.92% F1-Score)
-4. ✅ **Explainability** (20 marks) - Completed (SHAP + LIME with 21 outputs)
-5. 🔄 **Critical Discussion** (10 marks) - Planned
-6. 🔄 **Report Quality** (10 marks) - Planned
-7. 🔄 **BONUS: Frontend** (10 marks) - Planned (React + FastAPI)
-
-**Total**: 90 marks + 10 bonus = 100 marks
-
----
-
-## Important Disclaimers
-
-⚠️ **Educational Purpose Only**
+**Educational Purpose Only**
 - This is an academic machine learning assignment
 - NOT intended for commercial gambling or betting
 - Lottery outcomes are inherently random
-- Historical patterns do not predict future results
-- No guarantee of winning
-
-⚠️ **Ethical Considerations**
-- All data is publicly available from official lottery websites
-- No personal or sensitive data is collected
-- Predictions should not encourage gambling addiction
-- Model limitations are thoroughly discussed in Phase 6
-
----
-
-## License
-
-This project is for educational purposes only. All lottery data is sourced from official Sri Lankan lottery websites (NLB and DLB).
-
----
-
-## Author
-
-MSc AI Student - Applied Machine Learning Assignment
-Date: January 2026
+- No prediction system can guarantee wins
+- Use responsibly for learning purposes only
 
 ---
 
 ## References
 
-- National Lotteries Board (NLB): https://www.nlb.lk
-- Development Lotteries Board (DLB): https://www.dlb.lk
-- CatBoost Documentation: https://catboost.ai/
-- SHAP Documentation: https://shap.readthedocs.io/
-- LIME Documentation: https://github.com/marcotcr/lime
+1. Prokhorenkova, L., et al. (2018). "CatBoost: unbiased boosting with categorical features." NeurIPS 2018.
+2. Lundberg, S. M., & Lee, S. I. (2017). "A Unified Approach to Interpreting Model Predictions." NeurIPS 2017.
+3. Ribeiro, M. T., et al. (2016). "Why Should I Trust You?: Explaining the Predictions of Any Classifier." KDD 2016.
+4. National Lotteries Board Sri Lanka: https://www.nlb.lk
+5. Development Lotteries Board Sri Lanka: https://www.dlb.lk
 
 ---
 
-**For detailed development plan, see [CLAUDE_DEV_PLAN.md](CLAUDE_DEV_PLAN.md)**
+**Author**: MSc AI Student
+**Date**: January 2026
+**Course**: Applied Machine Learning Assignment
