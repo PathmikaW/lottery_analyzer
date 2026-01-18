@@ -227,8 +227,8 @@ async def get_statistics():
     return ModelStats(
         model_type="CatBoost Classifier",
         f1_score=0.2592,
-        precision=0.1495,
-        recall=1.0000,
+        precision=0.3266,
+        recall=0.2148,
         training_samples=485094,
         features_count=len(FEATURE_COLS),
         top_5_features=top_features

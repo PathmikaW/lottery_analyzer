@@ -111,7 +111,7 @@ export default function Home() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Badge variant="secondary">3.87x better than random</Badge>
+                    {/* <Badge variant="secondary">3.87x better than random</Badge> */}
                   </CardContent>
                 </Card>
 

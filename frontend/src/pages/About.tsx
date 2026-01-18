@@ -69,7 +69,7 @@ export default function About() {
                 <div className="text-sm text-gray-600">Samples</div>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-pink-600 mb-1">20</div>
+                <div className="text-2xl font-bold text-pink-600 mb-1">21</div>
                 <div className="text-sm text-gray-600">Features</div>
               </div>
             </div>
@@ -120,13 +120,17 @@ export default function About() {
               </div>
               <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <h4 className="font-semibold text-blue-900 mb-1">Precision</h4>
-                <div className="text-2xl font-bold text-blue-600">14.95%</div>
+                <div className="text-2xl font-bold text-blue-600">32.66%</div>
               </div>
               <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
                 <h4 className="font-semibold text-purple-900 mb-1">Recall</h4>
-                <div className="text-2xl font-bold text-purple-600">100.00%</div>
+                <div className="text-2xl font-bold text-purple-600">21.48%</div>
               </div>
-            </div>
+              <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <h4 className="font-semibold text-purple-900 mb-1">ROC-AUC</h4>
+                <div className="text-2xl font-bold text-purple-600">60.92%</div>
+              </div>
+            </div>  
           </CardContent>
         </Card>
 
